@@ -42,6 +42,9 @@ var createScene = function () {
 
 	// Add main character to the scene
 	createMainCharacter(camera);
+
+	// Initialize the animations defined in animations.js file
+	// initializeAnimations();
 	
 	return scene;
 };
@@ -70,6 +73,7 @@ var createMainCharacter = function(camera) {
 	BABYLON.SceneLoader.ImportMesh("", "../models/character/", "stone.gltf", scene, function (newMeshes) {
 		character = newMeshes[0];
 		camera.target = character;
+		initializeAnimations();
 
 		// var decalMaterial = new BABYLON.StandardMaterial("decalMat", scene);
 		// var ground = BABYLON.MeshBuilder.CreateGround("ground", { width: 300, height: 15 }, scene);

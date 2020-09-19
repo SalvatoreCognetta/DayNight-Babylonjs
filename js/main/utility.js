@@ -11,6 +11,6 @@ var Vec3x = function(value) {
  * transforming it in radians
  * @param {*} value x-value of the vec3 in degree
  */
-var Vec3Radx = function(value) {
+var Vec3DegToRadx = function(value) {
     return Vec3x(BABYLON.Tools.ToRadians(value));
 }
