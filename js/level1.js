@@ -28,7 +28,7 @@ var engine = new BABYLON.Engine(canvas, true); // Generate the BABYLON 3D engine
 var createScene = function () {
 	// Create the scene space
 	var scene = new BABYLON.Scene(engine);
-	scene.clearColor = new BABYLON.Color3(1, 1, 1);
+	scene.clearColor = new BABYLON.Color3(0, 1, 1);
 
 	//Adding a light
 	var light = new BABYLON.HemisphericLight("HemiLight", new BABYLON.Vector3(-1, 1, 0), scene);
@@ -91,7 +91,7 @@ function addPlatform(material, platformWidth, position, rotate=false) {
 		mesh.rotate(new BABYLON.Vector3(0,0,1), Math.PI/2);
     mesh.checkCollisions = true;
 	
-	mesh.updateVerticesData(BABYLON.VertexBuffer.PositionKind, position);
+	// mesh.updateVerticesData(BABYLON.VertexBuffer.PositionKind, position);
 
 	// mesh.material = material;
 	
