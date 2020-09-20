@@ -26,6 +26,7 @@ var walkAnimationGroup;
 var idleAnimationGroup;
 var rotateToWalkAnimationGroup;
 var rotateToIdleAnimationGroup;
+var jumpAnimationGroup;
 
 function initializeGroupsAnimation() {
 	walkAnimationGroup = new BABYLON.AnimationGroup("walkGroup");
@@ -174,11 +175,45 @@ function createRotateToIdleAnimation() {
 	rotateToIdleAnimationGroup.speedRatio = 2;
 }
 
+
+function createJumpAnimation(){
+
+    jumpAnimationGroup = new BABYLON.AnimationGroup("jumpGroup");
+
+    // Left Arm
+    var jumpLeftArm = new BABYLON.Animation("jumpLeftArm", "rotation", framerate, BABYLON.Animation.ANIMATIONTYPE_VECTOR3, BABYLON.Animation.ANIMATIONLOOPMODE_CYCLE);
+    var keys = createAnimationKeys([Vec3DegToRadx(0), Vec3DegToRadx(80), Vec3DegToRadx(160), Vec3DegToRadx(80), Vec3DegToRadx(0)]);
+    jumpLeftArm.setKeys(keys);
+
+    jumpAnimationGroup.addTargetedAnimation(jumpLeftArm, scene.getNodeByName('arm_left_upper.001'));
+
+    //Right Arm
+    var jumpRightArm = new BABYLON.Animation("jumpRightArm", "rotation", framerate, BABYLON.Animation.ANIMATIONTYPE_VECTOR3, BABYLON.Animation.ANIMATIONLOOPMODE_CYCLE);
+    var keys = createAnimationKeys([Vec3DegToRadx(0), Vec3DegToRadx(80), Vec3DegToRadx(160), Vec3DegToRadx(80), Vec3DegToRadx(0)]);
+    jumpRightArm.setKeys(keys);
+
+    jumpAnimationGroup.addTargetedAnimation(jumpRightArm, scene.getNodeByName('arm_right_upper.001'));
+
+    //Defining the torso positions at each key frame
+    var startPosTorso = scene.getNodeByName("torso").position;
+    var upTorsoPos = new BABYLON.Vector3(startPosTorso.x, startPosTorso.y + 0.5, startPosTorso.z);
+    var upTorsoPos2 = new BABYLON.Vector3(startPosTorso.x, startPosTorso.y + 1, startPosTorso.z);
+    
+    //Torso jump animation
+    var jumpTorso = new BABYLON.Animation("jumpTorso", "position", framerate, BABYLON.Animation.ANIMATIONTYPE_VECTOR3, BABYLON.Animation.ANIMATIONLOOPMODE_CYCLE);
+	var keys = createAnimationKeys([startPosTorso, upTorsoPos, upTorsoPos2, upTorsoPos, startPosTorso]); // An array with all animation keys
+	jumpTorso.setKeys(keys); // Adding the animation array to the animation object
+	// Use the addTargetedAnimation method to link the animations with the meshes and add these to the groups
+	jumpAnimationGroup.addTargetedAnimation(jumpTorso, scene.getNodeByName('torso'));
+
+
+}
+
 function initializeHeroAnimations() { 
 	initializeGroupsAnimation();
-
 	createWalkAnimation();
 	createIdleAnimation();
 	createRotateToWalkAnimation();
 	createRotateToIdleAnimation();
+    createJumpAnimation();
 }
