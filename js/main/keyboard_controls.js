@@ -8,12 +8,17 @@ scene.actionManager.registerAction(new BABYLON.ExecuteCodeAction(BABYLON.ActionM
     inputMap[evt.sourceEvent.key] = evt.sourceEvent.type == "keydown";
 }));
 
+var startingPosition = 0;
+var touchGround = false;
 //Rendering loop (executed for everyframe)
 scene.onBeforeRenderObservable.add(() => {
     var keydown = false;
     //Manage the movements of the character (e.g. position, direction)
     if (inputMap["w"]) {
-        hero.moveWithCollisions(hero.right.scaleInPlace(2));
+        if (hero.position.y < startingPosition+15 && !touchGround)
+            hero.moveWithCollisions(hero.up.scaleInPlace(2));
+        else
+            touchGround = true;
         keydown = true;
     }
     if (inputMap["s"]) {
@@ -21,20 +26,32 @@ scene.onBeforeRenderObservable.add(() => {
         keydown = true;
     }
     if (inputMap["a"]) {
-        hero.moveWithCollisions(hero.right.scaleInPlace(2));
-        walkAnimationGroup.play(true);
+        direction = -1;
+        if (!rotationToWalkEnded) {
+            rotateToWalkAnimationGroup.play();
+        } else {
+            hero.moveWithCollisions(hero.right.scaleInPlace(1));
+            walkAnimationGroup.play();
+        }
         keydown = true;
     }
     if (inputMap["d"]) {
-        hero.moveWithCollisions(hero.right.scaleInPlace(-1));
-        rotateToWalkAnimationGroup.play();
-        walkAnimationGroup.play(true);
+        direction = 1;
+        if (!rotationToWalkEnded)
+            rotateToWalkAnimationGroup.play();
+        else {
+            hero.moveWithCollisions(hero.right.scaleInPlace(-1));
+            walkAnimationGroup.play();
+        }
+
         keydown = true;
     }
     if (inputMap["b"]) {
         keydown = true;
     }
-
+    
+    if (hero != null && !keydown)
+        startingPosition = hero.position.y;
     // //Manage animations to be played  
     // if (keydown) {
     //     if (!animating) {

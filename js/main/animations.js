@@ -150,7 +150,7 @@ function createIdleAnimation() {
 
 }
 
-var direction = 1;//TODO mettere in constant e modificare sull'onkey event
+
 // Create rotate to walk animation
 function createRotateToWalkAnimation() {
 	//**********************TORSO**********************//
@@ -160,7 +160,7 @@ function createRotateToWalkAnimation() {
 	// Use the addTargetedAnimation method to link the animations with the meshes and add these to the groups
 	rotateToWalkAnimationGroup.addTargetedAnimation(rotateTorso, scene.getNodeByName('torso'));
 
-	rotateToWalkAnimationGroup.speedRatio = 3;
+	rotateToWalkAnimationGroup.speedRatio = 5;
 }
 
 // Create rotate to idle animation
@@ -172,7 +172,7 @@ function createRotateToIdleAnimation() {
 	// Use the addTargetedAnimation method to link the animations with the meshes and add these to the groups
 	rotateToIdleAnimationGroup.addTargetedAnimation(rotateTorso, scene.getNodeByName('torso'));
 
-	rotateToIdleAnimationGroup.speedRatio = 2;
+	rotateToIdleAnimationGroup.speedRatio = 5;
 }
 
 
@@ -214,6 +214,12 @@ function initializeHeroAnimations() {
 	createWalkAnimation();
 	createIdleAnimation();
 	createRotateToWalkAnimation();
+	rotateToWalkAnimationGroup.onAnimationEndObservable.add(function () {
+		console.log("Rotate to walk ended");
+		rotationToWalkEnded = true;
+		createWalkAnimation();
+		// walkAnimationGroup.play(true);
+	});
 	createRotateToIdleAnimation();
     createJumpAnimation();
 }
