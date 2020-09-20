@@ -25,17 +25,22 @@
 		<script src="https://cdn.babylonjs.com/babylon.js"></script>
 		<script src="https://cdn.babylonjs.com/loaders/babylonjs.loaders.min.js"></script>
 		<script src="https://cdn.babylonjs.com/gui/babylon.gui.min.js"></script>
+		<script src="https://preview.babylonjs.com/ammo.js"></script>
 		
 	</head>
 
 	<body>
 
-		<button onclick="walkAnimationGroup.play(true);">Test walk animation</button>
+		<button onclick="createWalkAnimation(); walkAnimationGroup.play(true);">Test walk animation</button>
 		<button onclick="idleAnimationGroup.play(true);">Test idle animation</button>
+		<button onclick="rotateToWalkAnimationGroup.play();">Test rotate to walk animation</button>
+		<button onclick="rotateToIdleAnimationGroup.play();">Test rotate to idle animation</button>
+
 		<canvas id="renderCanvas"></canvas>
 		
 		<script src="../js/main/constants.js"></script>
 		<script src="../js/main/utility.js"></script>
+		<script src="../js/main/collisions.js"></script>
 		<script src="../js/main/animations.js"></script>
 		<script src="../js/levels/level1.js"></script>
 		<script src="../js/main/keyboard_controls.js"></script>

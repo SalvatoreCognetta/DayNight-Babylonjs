@@ -24,80 +24,161 @@ var createAnimationKeys = function(values) {
 // To create an animation we follow the doc: https://doc.babylonjs.com/babylon101/animations
 var walkAnimationGroup;
 var idleAnimationGroup;
+var rotateToWalkAnimationGroup;
+var rotateToIdleAnimationGroup;
 
-function createWalkAnimation() {
-	// Create walk animation
+function initializeGroupsAnimation() {
 	walkAnimationGroup = new BABYLON.AnimationGroup("walkGroup");
+	idleAnimationGroup = new BABYLON.AnimationGroup("idleGroup");
+	rotateToWalkAnimationGroup = new BABYLON.AnimationGroup("rotateToWalkGroup");
+	rotateToIdleAnimationGroup = new BABYLON.AnimationGroup("rotateToIdleGroup");
+}
 
-	// Torso
+// Create walk animation
+function createWalkAnimation() {	
+	//**********************TORSO**********************//
 	var walkTorso = new BABYLON.Animation("walkTorso", "rotation", framerate, BABYLON.Animation.ANIMATIONTYPE_VECTOR3, BABYLON.Animation.ANIMATIONLOOPMODE_CYCLE);
-	var keys = createAnimationKeys([Vec3DegToRady(0), Vec3DegToRady(-3), Vec3DegToRady(0), Vec3DegToRady(3), Vec3DegToRady(0)]); // An array with all animation keys
+	var torsoRotation = scene.getNodeByName('torso').rotation.clone();
+	var keys = createAnimationKeys([
+		torsoRotation, 
+		new BABYLON.Vector3(torsoRotation.x, torsoRotation.y - BABYLON.Tools.ToRadians(3), torsoRotation.z), 
+		torsoRotation, 
+		new BABYLON.Vector3(torsoRotation.x, torsoRotation.y + BABYLON.Tools.ToRadians(3), torsoRotation.z), 
+		torsoRotation
+	]); // An array with all animation keys
 	walkTorso.setKeys(keys); // Adding the animation array to the animation object
 	// Use the addTargetedAnimation method to link the animations with the meshes and add these to the groups
 	walkAnimationGroup.addTargetedAnimation(walkTorso, scene.getNodeByName('torso'));
 
-	// Left arm
+	//**********************LEFT ARM**********************//
 	var walkArmLeft = new BABYLON.Animation("walkArmLeft", "rotation", framerate, BABYLON.Animation.ANIMATIONTYPE_VECTOR3, BABYLON.Animation.ANIMATIONLOOPMODE_CYCLE);
-	var keys = createAnimationKeys([Vec3DegToRadx(0), Vec3DegToRadx(-15), Vec3DegToRadx(0), Vec3DegToRadx(15), Vec3DegToRadx(0)]); // An array with all animation keys
+	var armLeftUpperRotation = scene.getNodeByName('arm_left_upper.001').rotation.clone();
+	var keys = createAnimationKeys([
+		armLeftUpperRotation, 
+		new BABYLON.Vector3(armLeftUpperRotation.x - BABYLON.Tools.ToRadians(15)), 
+		armLeftUpperRotation, 
+		new BABYLON.Vector3(armLeftUpperRotation.x + BABYLON.Tools.ToRadians(15)),
+		armLeftUpperRotation
+	]); // An array with all animation keys
 	walkArmLeft.setKeys(keys); // Adding the animation array to the animation object
 	// Use the addTargetedAnimation method to link the animations with the meshes and add these to the groups
 	walkAnimationGroup.addTargetedAnimation(walkArmLeft, scene.getNodeByName('arm_left_upper.001'));
+	rotateToWalkAnimationGroup.addTargetedAnimation(walkArmLeft, scene.getNodeByName('arm_left_upper.001')); // We reuse the animation for rotate to walk and idle
+	rotateToIdleAnimationGroup.addTargetedAnimation(walkArmLeft, scene.getNodeByName('arm_left_upper.001'));
 
-	// Right arm
+	//**********************RIGHT ARM**********************//
 	var walkArmRight = new BABYLON.Animation("walkArmRight", "rotation", framerate, BABYLON.Animation.ANIMATIONTYPE_VECTOR3, BABYLON.Animation.ANIMATIONLOOPMODE_CYCLE);
-	var keys = createAnimationKeys([Vec3DegToRadx(0), Vec3DegToRadx(15), Vec3DegToRadx(0), Vec3DegToRadx(-15), Vec3DegToRadx(0)]); // An array with all animation keys
+	var armRightUpperRotation = scene.getNodeByName('arm_right_upper.001').rotation.clone();
+	var keys = createAnimationKeys([
+		armRightUpperRotation,
+		new BABYLON.Vector3(armRightUpperRotation.x + BABYLON.Tools.ToRadians(15)), 
+		armRightUpperRotation,
+		new BABYLON.Vector3(armRightUpperRotation.x - BABYLON.Tools.ToRadians(15)), 
+		armRightUpperRotation
+	]); // An array with all animation keys
 	walkArmRight.setKeys(keys); // Adding the animation array to the animation object
 	// Use the addTargetedAnimation method to link the animations with the meshes and add these to the groups
 	walkAnimationGroup.addTargetedAnimation(walkArmRight, scene.getNodeByName('arm_right_upper.001'));
+	rotateToWalkAnimationGroup.addTargetedAnimation(walkArmRight, scene.getNodeByName('arm_right_upper.001'));
+	rotateToIdleAnimationGroup.addTargetedAnimation(walkArmRight, scene.getNodeByName('arm_right_upper.001'));
 
-	// Left leg
+	//**********************LEFT LEG**********************//
 	var walkLegLeft = new BABYLON.Animation("walkLegLeft", "rotation", framerate, BABYLON.Animation.ANIMATIONTYPE_VECTOR3, BABYLON.Animation.ANIMATIONLOOPMODE_CYCLE);
-	var keys = createAnimationKeys([Vec3DegToRadx(0), Vec3DegToRadx(15), Vec3DegToRadx(0), Vec3DegToRadx(-15), Vec3DegToRadx(0)]); // An array with all animation keys
+	var legLeftRotation = scene.getNodeByName('leg_left').rotation.clone();
+	var keys = createAnimationKeys([
+		legLeftRotation,
+		new BABYLON.Vector3(legLeftRotation.x + BABYLON.Tools.ToRadians(50)), 
+		legLeftRotation,
+		new BABYLON.Vector3(legLeftRotation.x - BABYLON.Tools.ToRadians(50)), 
+		legLeftRotation
+	]); // An array with all animation keys
 	walkLegLeft.setKeys(keys); // Adding the animation array to the animation object
 	// Use the addTargetedAnimation method to link the animations with the meshes and add these to the groups
 	walkAnimationGroup.addTargetedAnimation(walkLegLeft, scene.getNodeByName('leg_left'));
+	rotateToWalkAnimationGroup.addTargetedAnimation(walkLegLeft, scene.getNodeByName('leg_left'));
+	rotateToIdleAnimationGroup.addTargetedAnimation(walkLegLeft, scene.getNodeByName('leg_left'));
 
-	// Right leg
+	//**********************RIGHT LEG**********************//
 	var walkLegRight = new BABYLON.Animation("walkLegRight", "rotation", framerate, BABYLON.Animation.ANIMATIONTYPE_VECTOR3, BABYLON.Animation.ANIMATIONLOOPMODE_CYCLE);
-	var keys = createAnimationKeys([Vec3DegToRadx(0), Vec3DegToRadx(-15), Vec3DegToRadx(0), Vec3DegToRadx(15), Vec3DegToRadx(0)]); // An array with all animation keys
+	var legRightRotation = scene.getNodeByName('leg_right').rotation.clone();
+	var keys = createAnimationKeys([
+		legRightRotation,
+		new BABYLON.Vector3(legRightRotation.x - BABYLON.Tools.ToRadians(50)), 
+		legRightRotation, 
+		new BABYLON.Vector3(legRightRotation.x + BABYLON.Tools.ToRadians(50)), 
+		legRightRotation
+	]); // An array with all animation keys
 	walkLegRight.setKeys(keys); // Adding the animation array to the animation object
 	// Use the addTargetedAnimation method to link the animations with the meshes and add these to the groups
 	walkAnimationGroup.addTargetedAnimation(walkLegRight, scene.getNodeByName('leg_right'));
-
+	rotateToWalkAnimationGroup.addTargetedAnimation(walkLegRight, scene.getNodeByName('leg_right'));
+	rotateToIdleAnimationGroup.addTargetedAnimation(walkLegRight, scene.getNodeByName('leg_right'));
 }
 
+// Create idle animation
 function createIdleAnimation() {
-	// Create walk animation
-	idleAnimationGroup = new BABYLON.AnimationGroup("idleGroup");
-
+	//**********************HEAD**********************//
 	//Position of left arm to compute an up and down animation
-	var startPosL	= scene.getNodeByName('arm_left_upper.001').position;
-	var downPosL	= new BABYLON.Vector3(startPosL.x, startPosL.y - .05, startPosL.z);
-	var upPosL		= new BABYLON.Vector3(startPosL.x, startPosL.y + .05, startPosL.z);
+	var startPosHead	= scene.getNodeByName('head').position.y;
 
-	// Left arm
-	var idleArmLeft = new BABYLON.Animation("idleArmLeft", "position", framerate, BABYLON.Animation.ANIMATIONTYPE_VECTOR3, BABYLON.Animation.ANIMATIONLOOPMODE_CYCLE);
-	var keys = createAnimationKeys([startPosL, downPosL, startPosL, upPosL, startPosL]); // An array with all animation keys
+	var idleHead = new BABYLON.Animation("idleHead", "position.y", framerate, BABYLON.Animation.ANIMATIONTYPE_FLOAT, BABYLON.Animation.ANIMATIONLOOPMODE_CYCLE);
+	var keys = createAnimationKeys([startPosHead, startPosHead - .05, startPosHead, startPosHead + .05, startPosHead]); // An array with all animation keys
+	idleHead.setKeys(keys); // Adding the animation array to the animation object
+	// Use the addTargetedAnimation method to link the animations with the meshes and add these to the groups
+	idleAnimationGroup.addTargetedAnimation(idleHead, scene.getNodeByName('head'));
+
+	//**********************LEFT ARM**********************//
+	//Position of left arm to compute an up and down animation
+	var startPosL	= scene.getNodeByName('arm_left_upper.001').position.y;
+
+	var idleArmLeft = new BABYLON.Animation("idleArmLeft", "position.y", framerate, BABYLON.Animation.ANIMATIONTYPE_FLOAT, BABYLON.Animation.ANIMATIONLOOPMODE_CYCLE);
+	var keys = createAnimationKeys([startPosL, startPosL - .05, startPosL, startPosL + .05, startPosL]); // An array with all animation keys
 	idleArmLeft.setKeys(keys); // Adding the animation array to the animation object
 	// Use the addTargetedAnimation method to link the animations with the meshes and add these to the groups
 	idleAnimationGroup.addTargetedAnimation(idleArmLeft, scene.getNodeByName('arm_left_upper.001'));
 	
+	//**********************RIGHT ARM**********************//
 	//Position of right arm to compute an up and down animation
-	var startPosR	= scene.getNodeByName('arm_right_upper.001').position;
-	var downPosR	= new BABYLON.Vector3(startPosR.x, startPosR.y - .05, startPosR.z);
-	var upPosR		= new BABYLON.Vector3(startPosR.x, startPosR.y + .05, startPosR.z);
+	var startPosR	= scene.getNodeByName('arm_right_upper.001').position.y;
 
-	// Right arm
-	var idleArmRight = new BABYLON.Animation("idleArmRight", "position", framerate, BABYLON.Animation.ANIMATIONTYPE_VECTOR3, BABYLON.Animation.ANIMATIONLOOPMODE_CYCLE);
-	var keys = createAnimationKeys([startPosR, downPosR, startPosR, upPosR, startPosR]); // An array with all animation keys
+	var idleArmRight = new BABYLON.Animation("idleArmRight", "position.y", framerate, BABYLON.Animation.ANIMATIONTYPE_FLOAT, BABYLON.Animation.ANIMATIONLOOPMODE_CYCLE);
+	var keys = createAnimationKeys([startPosR, startPosR - .05, startPosR, startPosR + .05, startPosR]); // An array with all animation keys
 	idleArmRight.setKeys(keys); // Adding the animation array to the animation object
 	// Use the addTargetedAnimation method to link the animations with the meshes and add these to the groups
 	idleAnimationGroup.addTargetedAnimation(idleArmRight, scene.getNodeByName('arm_right_upper.001'));
 
 }
 
+var direction = 1;//TODO mettere in constant e modificare sull'onkey event
+// Create rotate to walk animation
+function createRotateToWalkAnimation() {
+	//**********************TORSO**********************//
+	var rotateTorso = new BABYLON.Animation("rotateToWalkTorso", "rotation", framerate, BABYLON.Animation.ANIMATIONTYPE_VECTOR3, BABYLON.Animation.ANIMATIONLOOPMODE_CYCLE);
+	var keys = createAnimationKeys([Vec3DegToRady(0), Vec3DegToRady(direction*15), Vec3DegToRady(direction*30), Vec3DegToRady(direction*45), Vec3DegToRady(direction*60), Vec3DegToRady(direction*75), Vec3DegToRady(direction*90)]); // An array with all animation keys
+	rotateTorso.setKeys(keys); // Adding the animation array to the animation object
+	// Use the addTargetedAnimation method to link the animations with the meshes and add these to the groups
+	rotateToWalkAnimationGroup.addTargetedAnimation(rotateTorso, scene.getNodeByName('torso'));
 
-function initializeAnimations() { 
+	rotateToWalkAnimationGroup.speedRatio = 3;
+}
+
+// Create rotate to idle animation
+function createRotateToIdleAnimation() {
+	//**********************TORSO**********************//
+	var rotateTorso = new BABYLON.Animation("rotateToIdleTorso", "rotation", framerate, BABYLON.Animation.ANIMATIONTYPE_VECTOR3, BABYLON.Animation.ANIMATIONLOOPMODE_CYCLE);
+	var keys = createAnimationKeys([Vec3DegToRady(direction*90),Vec3DegToRady(direction*75),Vec3DegToRady(direction*60),Vec3DegToRady(direction*45),Vec3DegToRady(direction*30),Vec3DegToRady(direction*15),Vec3DegToRady(0)]); // An array with all animation keys
+	rotateTorso.setKeys(keys); // Adding the animation array to the animation object
+	// Use the addTargetedAnimation method to link the animations with the meshes and add these to the groups
+	rotateToIdleAnimationGroup.addTargetedAnimation(rotateTorso, scene.getNodeByName('torso'));
+
+	rotateToIdleAnimationGroup.speedRatio = 2;
+}
+
+function initializeHeroAnimations() { 
+	initializeGroupsAnimation();
+
 	createWalkAnimation();
 	createIdleAnimation();
+	createRotateToWalkAnimation();
+	createRotateToIdleAnimation();
 }

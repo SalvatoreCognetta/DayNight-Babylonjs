@@ -1,11 +1,11 @@
 // Player
-var character = null;
+var hero = null;
 
 var animating = true;
 
 // Ground 
-var groundPosition 	= new BABYLON.Vector3(0, -0.9, 0);
-var groundWidth 	= 200; 
+var groundPosition = new BABYLON.Vector3(0, -1, 0);
+var groundWidth = 200;
 
 
 // Platforms
@@ -14,17 +14,18 @@ var platforms = [];
 // zPosition of the platforms
 var zPosition = 5;
 
-var platformDepth 	= 30;
-var platformHeight 	= 2;
-var platformWidthSmall 	= 5;
+var platformDepth = 30;
+var platformHeight = 2;
+var platformWidthSmall = 5;
 var platformWidthMedium = 20;
-var platformWidthBig 	= 50;
+var platformWidthBig = 50;
 
 
-var canvas = document.getElementById("renderCanvas"); // Get the canvas element
-var engine = new BABYLON.Engine(canvas, true); // Generate the BABYLON 3D engine
+canvas = document.getElementById("renderCanvas"); // Get the canvas element
+engine = new BABYLON.Engine(canvas, true); // Generate the BABYLON 3D engine
 
-/******* Add the create scene function ******/
+
+/******* Create scene function ******/
 var createScene = function () {
 	// Create the scene space
 	var scene = new BABYLON.Scene(engine);
@@ -34,18 +35,22 @@ var createScene = function () {
 	var light = new BABYLON.HemisphericLight("HemiLight", new BABYLON.Vector3(-1, 1, 0), scene);
 
 	// Add a camera to the scene and attach it to the canvas
-	var camera = new BABYLON.ArcRotateCamera("Camera", Math.PI / 2, Math.PI / 2, 2, new BABYLON.Vector3(0, 10, -120), scene);
+	camera = new BABYLON.ArcRotateCamera("Camera", Math.PI / 2, Math.PI / 2, 2, new BABYLON.Vector3(0, 10, -120), scene);
 	camera.attachControl(canvas, true);
+
+
+    // Enable physics
+	// scene.enablePhysics(new BABYLON.Vector3(0,-10,0), new BABYLON.AmmoJSPlugin());	
+
+	// Enable collision
+	enableCollision(scene, camera);
 
 	// Add ground and walls to the scene
 	createRoom();
 
 	// Add main character to the scene
-	createMainCharacter(camera);
+	createHero(camera);
 
-	// Initialize the animations defined in animations.js file
-	// initializeAnimations();
-	
 	return scene;
 };
 /******* End of the create scene function ******/
@@ -55,61 +60,60 @@ var createScene = function () {
 /**
  * Create the walls and ground of the room-level 
  */
-var createRoom = function() {	
+var createRoom = function () {
 	// Ground
-    addPlatform(null, groundWidth, groundPosition, false);
+	addPlatform(null, groundWidth, groundPosition, true, false);
 	// Left wall
-	addPlatform(null, platformWidthBig*2, new BABYLON.Vector3(-(groundWidth-platformHeight)/2, platformWidthBig, 0), true);
+	addPlatform(null, platformWidthBig * 2, new BABYLON.Vector3(-(groundWidth - platformHeight) / 2, platformWidthBig, 0), false,  true);
 	// Right wall
-	addPlatform(null, platformWidthBig*2, new BABYLON.Vector3((groundWidth-platformHeight)/2, platformWidthBig, 0), true);
+	addPlatform(null, platformWidthBig * 2, new BABYLON.Vector3((groundWidth - platformHeight) / 2, platformWidthBig, 0), false, true);
 }
 
 /**
  * Create the main character of the game
  * @camera camera of the scene
+ * @position {BABYLON.Vector3} Vector that specifies the init position of the hero
  */
-var createMainCharacter = function(camera) {
+var createHero = function (camera, position = new BABYLON.Vector3(0,1,0)) {
 	// The first parameter can be used to specify which mesh to import. Here we import all meshes
 	BABYLON.SceneLoader.ImportMesh("", "../models/character/", "stone.gltf", scene, function (newMeshes) {
-		character = newMeshes[0];
-		camera.target = character;
-		initializeAnimations();
+		hero = newMeshes[0];
+		hero.position = position;
+		camera.target = hero;
+		
+		// Initialize the animations defined in animations.js file
+		initializeHeroAnimations();
+		
+		// COLLISION DETECTION - Say that the mesh character will be collisionable
+		hero.checkCollisions = true;
+		
 
-		// var decalMaterial = new BABYLON.StandardMaterial("decalMat", scene);
-		// var ground = BABYLON.MeshBuilder.CreateGround("ground", { width: 300, height: 15 }, scene);
-		// ground.material = decalMaterial;
+		// // Add colliders
+        // var collidersVisible = false;
+        // var sphereCollider = BABYLON.Mesh.CreateSphere("sphere1", 16, 0.5, scene);
+        // sphereCollider.position.y = 0.08;
+        // sphereCollider.isVisible = collidersVisible;
+        // var boxCollider = BABYLON.Mesh.CreateBox("box1", 0.3, scene);
+        // boxCollider.position.y = -0.13;
+        // boxCollider.position.z = -0.13;
+        // boxCollider.isVisible = collidersVisible;
+
+        // // Create a physics root and add all children
+        // var physicsRoot = new BABYLON.Mesh("", scene);
+        // physicsRoot.addChild(newMeshes[0]);
+        // physicsRoot.addChild(boxCollider);
+        // physicsRoot.addChild(sphereCollider);
+        // physicsRoot.position.y+=3;
+
+        // // Enable physics on colliders first then physics root of the mesh
+        // boxCollider.physicsImpostor = new BABYLON.PhysicsImpostor(boxCollider, BABYLON.PhysicsImpostor.BoxImpostor, { mass: 0 }, scene);
+        // sphereCollider.physicsImpostor = new BABYLON.PhysicsImpostor(sphereCollider, BABYLON.PhysicsImpostor.SphereImpostor, { mass: 0 }, scene);
+        // physicsRoot.physicsImpostor = new BABYLON.PhysicsImpostor(physicsRoot, BABYLON.PhysicsImpostor.NoImpostor, { mass: 3 }, scene);
+
+        // // Orient the physics root
+        // physicsRoot.rotation.x = Math.PI/5;
+        // physicsRoot.rotation.z = Math.PI/6;
 	});
-}
-
-
-/**
- * Add platform to the scene with specified material, width and position
- * @param {BABYLON.MultiMaterial} material - Material to apply to the platform
- * @param {number} platformWidth - platformWidthSmall, platformWidthMedium or platformWidthBig
- * @param {boolean} [rotate = false] - if true rotate the platform by 90 degrees
- */
-function addPlatform(material, platformWidth, position, rotate=false) {
-    var mesh = BABYLON.MeshBuilder.CreateBox('mesh', {width: platformWidth, height: platformHeight, depth: platformDepth}, scene);
-    mesh.position = position;
-	if(rotate) 
-		mesh.rotate(new BABYLON.Vector3(0,0,1), Math.PI/2);
-    mesh.checkCollisions = true;
-	
-	// mesh.updateVerticesData(BABYLON.VertexBuffer.PositionKind, position);
-
-	// mesh.material = material;
-	
-    // mesh.subMeshes = [];
-    // var verticesCount = mesh.getTotalVertices();
-    // new BABYLON.SubMesh(1, 0, verticesCount, 0, 6, mesh);
-    // new BABYLON.SubMesh(1, 0, verticesCount, 6, 6, mesh);
-    // new BABYLON.SubMesh(2, 0, verticesCount, 12, 6, mesh);
-    // new BABYLON.SubMesh(2, 0, verticesCount, 18, 6, mesh);
-    // new BABYLON.SubMesh(0, 0, verticesCount, 24, 6, mesh);
-	// new BABYLON.SubMesh(0, 0, verticesCount, 30, 6, mesh);
-	//TODO Add more vertices
-
-    platforms.push(mesh);
 }
 
 
@@ -119,7 +123,10 @@ var scene = createScene(); //Call the createScene function
 
 // Register a render loop to repeatedly render the scene
 engine.runRenderLoop(function () {
-	scene.render();
+	scene.render();     
+	if (hero != null)
+		hero.moveWithCollisions(down);
+
 });
 
 // Watch for browser/canvas resize events
