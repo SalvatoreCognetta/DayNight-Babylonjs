@@ -15,77 +15,106 @@ scene.onBeforeRenderObservable.add(() => {
     var keydown = false;
     //Manage the movements of the character (e.g. position, direction)
     if (inputMap["w"]) {
-        if (hero.position.y < startingPosition+15 && !touchGround)
-            hero.moveWithCollisions(hero.up.scaleInPlace(2));
-        else
+        if (hero.mesh.position.y < startingPosition + 45 && hero.grounded) {
+            hero.mesh.moveWithCollisions(new BABYLON.Vector3(0, 1, 0));
+            // hero.mesh.position.y = hero.AABBmesh.position.y-5;
+        } else
             touchGround = true;
         keydown = true;
     }
     if (inputMap["s"]) {
-        hero.moveWithCollisions(hero.forward.scaleInPlace(-1));
+        // hero.moveWithCollisions(hero.forward.scaleInPlace(-1));
         keydown = true;
     }
-    if (inputMap["a"]) {
-        direction = -1;
-        if (!rotationToWalkEnded) {
-            rotateToWalkAnimationGroup.play();
-        } else {
-            hero.moveWithCollisions(hero.right.scaleInPlace(1));
-            walkAnimationGroup.play();
+    if (inputMap["a"] || inputMap["A"]) {
+        // hero.walkDirecton = -1;
+        // if (!rotationToWalkEnded) {
+        //     hero.currentAnimation = animation.IDLETOWALK;
+        //     rotateToWalkAnimationGroup.play();
+        // } else {
+        //     hero.mesh.moveWithCollisions(new BABYLON.Vector3(-1,0,0));
+        //     walkAnimationGroup.play();
+        // }
+
+        hero.mesh.moveWithCollisions(new BABYLON.Vector3(-1, 0, 0));
+        keydown = true;
+    }
+    if (inputMap["d"] || inputMap["D"]) {
+        //Walk 
+        // hero.walkDirecton = 1;
+        // if (!rotationToWalkEnded) {
+        //     hero.currentAnimation = animation.IDLETOWALK;
+        //     rotateToWalkAnimationGroup.play();
+        // } else {
+        //     // hero.AABBmesh.moveWithCollisions(new BABYLON.Vector3(1,0,0));
+        //     hero.mesh.moveWithCollisions(new BABYLON.Vector3(1,0,0));
+        //     walkAnimationGroup.play();
+        // }
+
+        hero.mesh.moveWithCollisions(new BABYLON.Vector3(1, 0, 0));
+        keydown = true;
+    }
+
+    if (hero.mesh != null && !keydown)
+        startingPosition = hero.mesh.position.y;
+
+    //Manage animations to be played  
+    if (keydown) {
+        if (!animating) {
+            animating = true;
+            if (inputMap["d"] || inputMap["D"]) {
+                //Walk 
+                hero.walkDirecton = 1;
+                createRotateToWalkAnimation();
+                if (!rotationToWalkEnded) {
+                    hero.currentAnimation = animation.IDLETOWALK;
+                    rotateToWalkAnimationGroup.play(); // At the end of the IdleToWalk animation is called the walk animation itself
+                } else {
+                    // hero.currentAnimation = animation.WALK;
+                    // walkAnimationGroup.play(true);
+                }
+
+                keydown = true;
+            } else if (inputMap["a"] || inputMap["A"]) {
+                hero.walkDirecton = -1;
+                createRotateToWalkAnimation();
+                if (!rotationToWalkEnded) {
+                    hero.currentAnimation = animation.IDLETOWALK;
+                    rotateToWalkAnimationGroup.play();
+                } 
+            }
         }
-        keydown = true;
-    }
-    if (inputMap["d"]) {
-        direction = 1;
-        if (!rotationToWalkEnded)
-            rotateToWalkAnimationGroup.play();
-        else {
-            hero.moveWithCollisions(hero.right.scaleInPlace(-1));
-            walkAnimationGroup.play();
+    } else {
+        hero.grounded = false;
+        if (hero.mesh != null && animating) {
+            console.log("test");
+            if (hero.currentAnimation != animation.IDLE) {
+                hero.currentAnimation = animation.WALKTOIDLE;
+                createRotateToIdleAnimation();
+                walkAnimationGroup.stop();
+                rotateToWalkAnimationGroup.stop();
+                rotateToIdleAnimationGroup.play();
+            }
+            else {
+                //Default animation is idle when no key is down     
+                idleAnimationGroup.reset();
+                idleAnimationGroup.start(true, 1.0, idleAnimationGroup.from, idleAnimationGroup.to, false);
+
+            }
+            // //Stop all animations besides Idle Anim when no key is down
+            // walkAnimationGroup.reset();
+            // walkAnimationGroup.stop();
+
+            //Ensure animation are played only once per rendering loop
+            animating = false;
+
+            rotationToWalkEnded = false;
         }
 
-        keydown = true;
+        if (rotateToIdleAnimationGroup != null) {
+            // rotateToIdleAnimationGroup.play();
+        }
     }
-    if (inputMap["b"]) {
-        keydown = true;
-    }
-    
-    if (hero != null && !keydown)
-        startingPosition = hero.position.y;
-    // //Manage animations to be played  
-    // if (keydown) {
-    //     if (!animating) {
-    //         animating = true;
-    //         if (inputMap["s"]) {
-    //             //Walk backwards
-    //             walkBackAnim.start(true, 1.0, walkBackAnim.from, walkBackAnim.to, false);
-    //         }
-    //         else if
-    //             (inputMap["b"]) {
-    //             //Samba!
-    //             sambaAnim.start(true, 1.0, sambaAnim.from, sambaAnim.to, false);
-    //         }
-    //         else {
-    //             //Walk
-    //             walkAnim.start(true, 1.0, walkAnim.from, walkAnim.to, false);
-    //         }
-    //     }
-    // }
-    // else {
-
-    //     if (animating) {
-    //         //Default animation is idle when no key is down     
-    //         idleAnim.start(true, 1.0, idleAnim.from, idleAnim.to, false);
-
-    //         //Stop all animations besides Idle Anim when no key is down
-    //         sambaAnim.stop();
-    //         walkAnim.stop();
-    //         walkBackAnim.stop();
-
-    //         //Ensure animation are played only once per rendering loop
-    //         animating = false;
-    //     }
-    // }
 });
 
 

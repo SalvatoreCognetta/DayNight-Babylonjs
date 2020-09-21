@@ -3,10 +3,26 @@ var engine;
 var camera;
 
 var framerate = 60;
-var down = new BABYLON.Vector3(0,-.8,0);
+var down = new BABYLON.Vector3(0,-.5,0);
+
+// Animations
+var animating = true;
+
+const animation = {
+    IDLE        : 0,
+    IDLETOWALK  : 1,
+    WALK        : 2,
+    WAKJTOIDLE  : 3
+}
 
 var torsoRotation;
 
 var rotationToWalkEnded = false;
+var rotationToIdleEnded = false;
 
 var direction = 1; // Direction of the hero (1: right, -1: left)
+
+
+
+
+var m;
