@@ -5,7 +5,7 @@
  * @param {number} platformWidth - platformWidthSmall, platformWidthMedium or platformWidthBig
  * @param {boolean} [rotate = false] - if true rotate the platform by 90 degrees
  */
-function addPlatform(material, platformWidth, position, ground = false, rotate = false) {
+function addPlatform(material, platformWidth, position, showGroup = objShow.ALWAYS, ground = false, rotate = false) {
 	var mesh = BABYLON.MeshBuilder.CreateBox('mesh', { width: platformWidth, height: platformHeight, depth: platformDepth }, scene);
 	mesh.position = position;
 	if (rotate)
@@ -17,7 +17,8 @@ function addPlatform(material, platformWidth, position, ground = false, rotate =
 		// mesh.physicsImpostor = new BABYLON.PhysicsImpostor(mesh, BABYLON.PhysicsImpostor.BoxImpostor, { mass: 0, friction: 0.5, restitution: 0.7 }, scene);	
 	}
 
-	platforms.push(mesh);
+	var platform = new Platform(mesh, showGroup);
+	platforms.push(platform);
 }
 /*****************************************************ENVIRONMENT UTILITY FUNCTION*****************************************************/
 

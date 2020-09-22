@@ -20,8 +20,8 @@ function enableCollision(scene, camera) {
  */
 function checkHeadCollision() {
 	platforms.forEach(function(platform) {
-		if (platform.position.y > hero.mesh.position.y) {
-			if (platform.intersectsMesh(hero.AABBmesh, false)) {
+		if (platform.mesh.position.y > hero.mesh.position.y) {
+			if (platform.mesh.intersectsMesh(hero.AABBmesh, false)) {
 				console.log("Head collision");
 				hero.headCollision = true;
 			}
@@ -37,8 +37,8 @@ function checkHeadCollision() {
 function checkLateralCollision(direction) {
 	platforms.forEach(function(platform) {
 		var collisionDetected = false;
-		if (direction * platform.position.x > 0) {
-			if (platform.intersectsMesh(hero.AABBmesh, false)) {
+		if (direction * platform.mesh.position.x > 0) {
+			if (platform.mesh.intersectsMesh(hero.AABBmesh, false)) {
 				console.log("Lateral collision");
 				hero.lateralCollision = true;
 				collisionDetected = true;

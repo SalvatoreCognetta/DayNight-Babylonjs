@@ -62,13 +62,13 @@ var createScene = function () {
  */
 var createRoom = function () {
 	// Ground
-	addPlatform(null, groundWidth, groundPosition, true, false);
+	addPlatform(null, groundWidth, groundPosition, objShow.ALWAYS, true, false);
 	// Left wall
-	addPlatform(null, platformWidthBig * 2, new BABYLON.Vector3(-(groundWidth - platformHeight) / 2, platformWidthBig, 0), false, true);
+	addPlatform(null, platformWidthBig * 2, new BABYLON.Vector3(-(groundWidth - platformHeight) / 2, platformWidthBig, 0), objShow.ALWAYS, false, true);
 	// Right wall
-	addPlatform(null, platformWidthBig * 2, new BABYLON.Vector3((groundWidth - platformHeight) / 2, platformWidthBig, 0), false, true);
+	addPlatform(null, platformWidthBig * 2, new BABYLON.Vector3((groundWidth - platformHeight) / 2, platformWidthBig, 0), objShow.ALWAYS, false, true);
 
-	addPlatform(null, platformWidthMedium, new BABYLON.Vector3(2, 23, 0), false, false);
+	addPlatform(null, platformWidthMedium, new BABYLON.Vector3(2, 23, 0), objShow.DAY, false, false);
 }
 
 
