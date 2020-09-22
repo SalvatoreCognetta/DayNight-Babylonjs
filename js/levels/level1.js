@@ -49,6 +49,7 @@ var createScene = function () {
 
 	// Add main character to the scene
 	createHero(camera);
+	createLamp();
 
 	return scene;
 };
@@ -150,7 +151,16 @@ var createHero = function (camera, position = hero.startingPosition) {
 }
 
 
+var createLamp = function(){
+	BABYLON.SceneLoader.ImportMesh("", lantern.path, lantern.name, scene, function (newMeshes) {
+		lantern.mesh 		= newMeshes[0];
+		lantern.mesh.position.copyFrom(lantern.startingPosition);
+		lantern.mesh.rotation = lantern.startingOrientation;
+		lantern.mesh.scaling = lantern.scale;
+		//camera.target 	= hero.mesh;
 
+	})
+}
 
 var scene = createScene(); //Call the createScene function
 var light1 = new BABYLON.DirectionalLight("DirectionalLight1", new BABYLON.Vector3(0, -1, 1), scene);
