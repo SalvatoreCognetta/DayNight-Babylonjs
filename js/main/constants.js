@@ -23,3 +23,5 @@ var rotationToIdleEnded = false;
 var direction = 1; // Direction of the hero (1: right, -1: left)
 
 var day = true;
+
+var debug = true;

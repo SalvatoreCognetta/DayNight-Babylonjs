@@ -110,7 +110,9 @@ var createHero = function (camera, position = hero.startingPosition) {
 		var matBB = new BABYLON.StandardMaterial("matBB", scene);
 		matBB.emissiveColor = new BABYLON.Color3(1, 1, 1);
 		matBB.wireframe = true;
-
+		if (!debug)
+			matBB.alpha = 0;
+		
 		// AABB - Axis aligned bounding box
 		hero.AABBmesh = BABYLON.Mesh.CreateBox("AABB", hero.AABBdimension, scene);
 		hero.AABBmesh.material = matBB;
