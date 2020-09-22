@@ -40,7 +40,6 @@ function createWalkAnimation() {
 	//**********************TORSO**********************//
 	var walkTorso = new BABYLON.Animation("walkTorso", "rotation", framerate, BABYLON.Animation.ANIMATIONTYPE_VECTOR3, BABYLON.Animation.ANIMATIONLOOPMODE_CYCLE);
 	var torsoRotation = scene.getNodeByName('torso').rotation.clone();
-	console.log("torso rot" + torsoRotation);
 	var keys = createAnimationKeys([
 		torsoRotation, 
 		new BABYLON.Vector3(torsoRotation.x, torsoRotation.y - BABYLON.Tools.ToRadians(3), torsoRotation.z), 
@@ -279,7 +278,6 @@ function initializeHeroAnimations() {
 	rotateToWalkAnimationGroup.onAnimationEndObservable.add(function () {
 		if (hero.currentAnimation != animation.WALK) {
 			console.log("Rotate to walk ended");
-			console.log(scene.getNodeByName('torso').rotation);
 			createWalkAnimation();
 			rotationToWalkEnded = true;
 			// animating = false;
