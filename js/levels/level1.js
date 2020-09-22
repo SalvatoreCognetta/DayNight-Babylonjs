@@ -1,5 +1,4 @@
 var animating = true;
-var day = true;
 // Ground 
 var groundPosition = new BABYLON.Vector3(0, 0, 0);
 var groundWidth = 200;
@@ -68,7 +67,7 @@ var createRoom = function () {
 	// Right wall
 	addPlatform(null, platformWidthBig * 2, new BABYLON.Vector3((groundWidth - platformHeight) / 2, platformWidthBig, 0), false, true);
 
-	addPlatform(null, platformWidthMedium, new BABYLON.Vector3(2, 33, 0), false, false);
+	addPlatform(null, platformWidthMedium, new BABYLON.Vector3(2, 23, 0), false, false);
 }
 
 
@@ -87,7 +86,6 @@ var createHero = function (camera, position = hero.startingPosition) {
 		// COLLISION DETECTION - Say that the mesh will be collisionable
 		hero.mesh.ellipsoid = new BABYLON.Vector3(3, .1, 1);
 		hero.mesh.checkCollisions = true;
-
 
 		// Initialize the animations defined in animations.js file
 		initializeHeroAnimations();
@@ -109,18 +107,16 @@ var createHero = function (camera, position = hero.startingPosition) {
 
 		// const size = new BABYLON.Vector3(1, Math.cos(Math.PI / 3), Math.cos(Math.PI / 4));
 		
-		// var matBB = new BABYLON.StandardMaterial("matBB", scene);
-		// matBB.emissiveColor = new BABYLON.Color3(1, 1, 1);
-		// matBB.wireframe = true;
+		var matBB = new BABYLON.StandardMaterial("matBB", scene);
+		matBB.emissiveColor = new BABYLON.Color3(1, 1, 1);
+		matBB.wireframe = true;
 
-		// // AABB - Axis aligned bounding box
-		// hero.AABBmesh = BABYLON.Mesh.CreateBox("AABB", hero.AABBdimension, scene);
-		// hero.AABBmesh.material = matBB;
-		// hero.AABBmesh.ellipsoid = new BABYLON.Vector3(hero.AABBdimension/2, hero.AABBdimension/2-1, 10);
-		// hero.AABBmesh.position = hero.AABBposition; // new BABYLON.Vector3(0, (hero.AABBdimension+platformHeight)/2, 0);
-		// // hero.AABBmesh.checkCollisions = true;
-		// hero.AABBmesh.scaling = new BABYLON.Vector3(1, Math.cos(Math.PI / 6), 1);
-		
+		// AABB - Axis aligned bounding box
+		hero.AABBmesh = BABYLON.Mesh.CreateBox("AABB", hero.AABBdimension, scene);
+		hero.AABBmesh.material = matBB;
+		hero.AABBmesh.ellipsoid = new BABYLON.Vector3(hero.AABBdimension/2, hero.AABBdimension/2-1, 10);
+		hero.AABBmesh.position = hero.mesh.position.clone();
+		hero.AABBmesh.scaling = new BABYLON.Vector3(1, Math.cos(Math.PI / 6), 1);		
 		
 
 		// // Add colliders
@@ -160,11 +156,12 @@ var light1 = new BABYLON.DirectionalLight("DirectionalLight1", new BABYLON.Vecto
 engine.runRenderLoop(function () {
 	scene.render();
 	if (hero.mesh != null) {
+		hero.AABBmesh.position.y = hero.mesh.position.y + hero.height/2;
+		hero.AABBmesh.position.x = hero.mesh.position.x + .8;
 		// hero.moveWithCollisions(down);
 		// m.moveWithCollisions(down);
 		// if (!platforms[0].intersectsMesh(hero.AABBmesh, false)) {
-			hero.mesh.moveWithCollisions(down);
-		// }
+		hero.mesh.moveWithCollisions(down);
 	}
 	if (day){
 		

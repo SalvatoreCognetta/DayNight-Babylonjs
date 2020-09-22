@@ -3,21 +3,23 @@ var inputMap = {};
 scene.actionManager = new BABYLON.ActionManager(scene);
 scene.actionManager.registerAction(new BABYLON.ExecuteCodeAction(BABYLON.ActionManager.OnKeyDownTrigger, function (evt) {
     inputMap[evt.sourceEvent.key] = evt.sourceEvent.type == "keydown";
-    console.log('n'+evt.sourceEvent.key+'n');
 }));
 scene.actionManager.registerAction(new BABYLON.ExecuteCodeAction(BABYLON.ActionManager.OnKeyUpTrigger, function (evt) {
     inputMap[evt.sourceEvent.key] = evt.sourceEvent.type == "keydown";
 }));
 
+
+if (hero.mesh != null)
+    var startingPosition = hero.mesh.position.y;
 //Rendering loop (executed for everyframe)
 scene.onBeforeRenderObservable.add(() => {
     var keydown = false;
     //Manage the movements of the character (e.g. position, direction)
     if (inputMap["w"] || inputMap["W"] || inputMap[" "]) {
         // Jump
-        if (hero.mesh.position.y < startingPosition + 25 && hero.grounded) {
-            hero.mesh.moveWithCollisions(new BABYLON.Vector3(0, 1, 0));
-            // hero.mesh.position.y = hero.AABBmesh.position.y-5;
+        if (hero.mesh.position.y < startingPosition + hero.maximumJumpHeight && hero.grounded && !hero.headCollision) {
+            hero.mesh.moveWithCollisions(new BABYLON.Vector3(0, 1.5, 0));
+            checkHeadCollision();
         } else
             hero.grounded = false;
         keydown = true;
@@ -27,13 +29,24 @@ scene.onBeforeRenderObservable.add(() => {
         keydown = true;
     }
     if (inputMap["a"] || inputMap["A"]) {
+        checkLateralCollision(-1);
+        if (hero.walkDirecton == 1) 
+            animating = false;
         // Walk left
-        hero.mesh.moveWithCollisions(new BABYLON.Vector3(-1, 0, 0));
+        if (!hero.lateralCollision)
+            hero.mesh.moveWithCollisions(new BABYLON.Vector3(-1, 0, 0));
         keydown = true;
     }
     if (inputMap["d"] || inputMap["D"]) {
+        checkLateralCollision(1);
+        if (hero.walkDirecton == -1) 
+            animating = false;
         //Walk right
-        hero.mesh.moveWithCollisions(new BABYLON.Vector3(1, 0, 0));
+        if (!hero.lateralCollision)
+            hero.mesh.moveWithCollisions(new BABYLON.Vector3(1, 0, 0));
+        keydown = true;
+    }
+    if (inputMap["l"] || inputMap["L"]) {
         keydown = true;
     }
 
@@ -55,18 +68,22 @@ scene.onBeforeRenderObservable.add(() => {
 
                 keydown = true;
             } else if (inputMap["a"] || inputMap["A"]) {
+                console.log("test");
                 hero.walkDirecton = -1;
                 createRotateToWalkAnimation();
                 if (!rotationToWalkEnded) {
                     hero.currentAnimation = animation.IDLETOWALK;
                     rotateToWalkAnimationGroup.play();
                 } 
+            } else if (inputMap["l"] || inputMap["L"]) {
+                day = !day;
             }
         }
     } else {
         hero.grounded = false;
+        hero.headCollision = false;
+        hero.lateralCollision = false;
         if (hero.mesh != null && animating) {
-            console.log("test");
             if (hero.currentAnimation != animation.IDLE) {
                 hero.currentAnimation = animation.WALKTOIDLE;
                 createRotateToIdleAnimation();
