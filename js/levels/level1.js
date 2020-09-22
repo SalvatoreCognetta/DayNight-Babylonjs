@@ -163,7 +163,6 @@ var createLamp = function(){
 
 var scene = createScene(); //Call the createScene function
 var light1 = new BABYLON.DirectionalLight("DirectionalLight1", new BABYLON.Vector3(0, -1, 1), scene);
-var light1 = new BABYLON.DirectionalLight("DirectionalLight1", new BABYLON.Vector3(0, -1, 1), scene);
 var gl = new BABYLON.GlowLayer("glow", scene);
 		
 // Register a render loop to repeatedly render the scene
