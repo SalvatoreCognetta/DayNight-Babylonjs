@@ -11,5 +11,6 @@ function enableCollision(scene, camera) {
 	camera.applyGravity = true;
 
 	//Set the ellipsoid around the camera (e.g. your player's size)
-	camera.ellipsoid = new BABYLON.Vector3(1, 1, 1);
+    camera.ellipsoid = new BABYLON.Vector3(1, 1, 1);
+    
 }
