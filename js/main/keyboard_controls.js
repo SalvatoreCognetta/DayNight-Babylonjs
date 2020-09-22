@@ -30,23 +30,36 @@ scene.onBeforeRenderObservable.add(() => {
     }
     if (inputMap["a"] || inputMap["A"]) {
         checkLateralCollision(-1);
-        if (hero.walkDirecton == 1) 
+        if (hero.walkDirecton == 1)
             animating = false;
         // Walk left
         if (!hero.lateralCollision)
             hero.mesh.moveWithCollisions(new BABYLON.Vector3(-1, 0, 0));
+
+        // Check if the hero is facing the right direction
+        var torsoRotation = scene.getNodeByName('torso').rotation;
+        if (hero.currentAnimation == animation.WALK && torsoRotation.y != BABYLON.Tools.ToRadians(-90))
+            torsoRotation.y = BABYLON.Tools.ToRadians(-90);
+
         keydown = true;
     }
     if (inputMap["d"] || inputMap["D"]) {
         checkLateralCollision(1);
-        if (hero.walkDirecton == -1) 
+        if (hero.walkDirecton == -1)
             animating = false;
         //Walk right
         if (!hero.lateralCollision)
             hero.mesh.moveWithCollisions(new BABYLON.Vector3(1, 0, 0));
+
+        // Check if the hero is facing the right direction
+        var torsoRotation = scene.getNodeByName('torso').rotation;
+        if (hero.currentAnimation == animation.WALK && torsoRotation.y != BABYLON.Tools.ToRadians(90))
+            torsoRotation.y = BABYLON.Tools.ToRadians(90);
+
         keydown = true;
     }
     if (inputMap["l"] || inputMap["L"]) {
+        lightButtonClicked = true;
         keydown = true;
     }
 
@@ -74,8 +87,9 @@ scene.onBeforeRenderObservable.add(() => {
                 if (!rotationToWalkEnded) {
                     hero.currentAnimation = animation.IDLETOWALK;
                     rotateToWalkAnimationGroup.play();
-                } 
-            } else if (inputMap["l"] || inputMap["L"]) {
+                }
+            } 
+            if (inputMap["l"] || inputMap["L"]) {
                 day = !day;
             }
         }
