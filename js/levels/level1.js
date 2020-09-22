@@ -1,5 +1,5 @@
 var animating = true;
-
+var day = true;
 // Ground 
 var groundPosition = new BABYLON.Vector3(0, 0, 0);
 var groundWidth = 200;
@@ -27,10 +27,10 @@ var createScene = function () {
 	// Create the scene space
 	var scene = new BABYLON.Scene(engine);
 	scene.clearColor = new BABYLON.Color3(0, 1, 1);
-
-	//Adding a light
+	document.getElementById("Button").onclick = function(){day = !day;};
+	//Adding some ambient light
 	var light = new BABYLON.HemisphericLight("HemiLight", new BABYLON.Vector3(-1, 1, 0), scene);
-
+	light.intensity = 0.5;
 	// Add a camera to the scene and attach it to the canvas
 	camera = new BABYLON.ArcRotateCamera("Camera", Math.PI / 2, Math.PI / 2, 2, new BABYLON.Vector3(0, 10, -120), scene);
 	camera.attachControl(canvas, true);
@@ -155,7 +155,7 @@ var createHero = function (camera, position = hero.startingPosition) {
 
 
 var scene = createScene(); //Call the createScene function
-
+var light1 = new BABYLON.DirectionalLight("DirectionalLight1", new BABYLON.Vector3(0, -1, 1), scene);
 // Register a render loop to repeatedly render the scene
 engine.runRenderLoop(function () {
 	scene.render();
@@ -166,6 +166,22 @@ engine.runRenderLoop(function () {
 			hero.mesh.moveWithCollisions(down);
 		// }
 	}
+	if (day){
+		
+			// During the day, the direct light is yellow
+			light1.diffuse = new BABYLON.Color3(1, 1, 0);
+			// light1.setEnabled(false);
+			// Changing background colour
+			scene.clearColor = new BABYLON.Color3(0.8, 0.8, 1);
+			
+	} else if (!day){
+			
+			// During the night, the direct light is blue
+			light1.diffuse = new BABYLON.Color3(0.2, 0.2, 1);
+			// light1.setEnabled(false);
+			// Changing the background colour when its night
+			scene.clearColor = new BABYLON.Color3(0, 0, 0.2);	
+	}	
 });
 
 // Watch for browser/canvas resize events
