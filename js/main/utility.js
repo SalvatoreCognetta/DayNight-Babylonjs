@@ -20,6 +20,24 @@ function addPlatform(material, platformWidth, position, showGroup = objShow.ALWA
 	var platform = new Platform(mesh, showGroup);
 	platforms.push(platform);
 }
+
+
+function enablePlatforms(day) {
+	platforms.forEach(function(platform) {
+		if (platform.show == objShow.DAY && day) {
+			platform.mesh.setEnabled(true);
+		}
+		if (platform.show == objShow.DAY && !day) {
+			platform.mesh.setEnabled(false);
+		}
+		if (platform.show == objShow.NIGHT && day) {
+			platform.mesh.setEnabled(false);
+		}
+		if (platform.show == objShow.NIGHT && !day) {
+			platform.mesh.setEnabled(true);
+		}
+	});
+}
 /*****************************************************ENVIRONMENT UTILITY FUNCTION*****************************************************/
 
 

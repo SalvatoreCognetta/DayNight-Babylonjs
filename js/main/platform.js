@@ -10,4 +10,11 @@ class Platform {
     set mesh(x) {
         this._mesh = x;
     }
+
+    get show() {
+        return this._show;
+    }
+    set show(x) {
+        this._show = x;
+    }
 }

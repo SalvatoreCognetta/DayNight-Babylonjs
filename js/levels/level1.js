@@ -26,7 +26,7 @@ var createScene = function () {
 	// Create the scene space
 	var scene = new BABYLON.Scene(engine);
 	scene.clearColor = new BABYLON.Color3(0, 1, 1);
-	document.getElementById("Button").onclick = function(){day = !day;};
+	document.getElementById("Button").onclick = function () { day = !day; };
 	//Adding some ambient light
 	var light = new BABYLON.HemisphericLight("HemiLight", new BABYLON.Vector3(-1, 1, 0), scene);
 	light.intensity = 0.5;
@@ -68,7 +68,7 @@ var createRoom = function () {
 	// Right wall
 	addPlatform(null, platformWidthBig * 2, new BABYLON.Vector3((groundWidth - platformHeight) / 2, platformWidthBig, 0), objShow.ALWAYS, false, true);
 
-	addPlatform(null, platformWidthMedium, new BABYLON.Vector3(2, 23, 0), objShow.DAY, false, false);
+	addPlatform(null, platformWidthMedium, new BABYLON.Vector3(2, 23, 0), objShow.NIGHT, false, false);
 }
 
 
@@ -80,8 +80,8 @@ var createRoom = function () {
 var createHero = function (camera, position = hero.startingPosition) {
 	// The first parameter can be used to specify which mesh to import. Here we import all meshes
 	BABYLON.SceneLoader.ImportMesh("", hero.path, hero.name, scene, function (newMeshes) {
-		hero.mesh 		= newMeshes[0];
-		camera.target 	= hero.mesh;
+		hero.mesh = newMeshes[0];
+		camera.target = hero.mesh;
 
 		hero.mesh.position.copyFrom(hero.startingPosition);
 		// COLLISION DETECTION - Say that the mesh will be collisionable
@@ -96,7 +96,7 @@ var createHero = function (camera, position = hero.startingPosition) {
 
 
 		hero.mesh.onCollide = function (collidedMesh) {
-			if (collidedMesh.position.y < hero.mesh.position.y - 1) { 
+			if (collidedMesh.position.y < hero.mesh.position.y - 1) {
 				// Check if the character touch the ground underneat him
 				hero.grounded = true;
 			} else {
@@ -107,20 +107,20 @@ var createHero = function (camera, position = hero.startingPosition) {
 
 
 		// const size = new BABYLON.Vector3(1, Math.cos(Math.PI / 3), Math.cos(Math.PI / 4));
-		
+
 		var matBB = new BABYLON.StandardMaterial("matBB", scene);
 		matBB.emissiveColor = new BABYLON.Color3(1, 1, 1);
 		matBB.wireframe = true;
 		if (!debug)
 			matBB.alpha = 0;
-		
+
 		// AABB - Axis aligned bounding box
 		hero.AABBmesh = BABYLON.Mesh.CreateBox("AABB", hero.AABBdimension, scene);
 		hero.AABBmesh.material = matBB;
-		hero.AABBmesh.ellipsoid = new BABYLON.Vector3(hero.AABBdimension/2, hero.AABBdimension/2-1, 10);
+		hero.AABBmesh.ellipsoid = new BABYLON.Vector3(hero.AABBdimension / 2, hero.AABBdimension / 2 - 1, 10);
 		hero.AABBmesh.position = hero.mesh.position.clone();
-		hero.AABBmesh.scaling = new BABYLON.Vector3(1, Math.cos(Math.PI / 6), 1);		
-		
+		hero.AABBmesh.scaling = new BABYLON.Vector3(1, Math.cos(Math.PI / 6), 1);
+
 
 		// // Add colliders
 		// var collidersVisible = false;
@@ -151,9 +151,9 @@ var createHero = function (camera, position = hero.startingPosition) {
 }
 
 
-var createLamp = function(){
+var createLamp = function () {
 	BABYLON.SceneLoader.ImportMesh("", lantern.path, lantern.name, scene, function (newMeshes) {
-		lantern.mesh 		= newMeshes[0];
+		lantern.mesh = newMeshes[0];
 		lantern.mesh.position.copyFrom(lantern.startingPosition);
 		lantern.mesh.rotation = lantern.startingOrientation;
 		lantern.mesh.scaling = lantern.scale;
@@ -164,33 +164,36 @@ var createLamp = function(){
 
 var scene = createScene(); //Call the createScene function
 var light1 = new BABYLON.DirectionalLight("DirectionalLight1", new BABYLON.Vector3(0, -1, 1), scene);
+
 // Register a render loop to repeatedly render the scene
 engine.runRenderLoop(function () {
 	scene.render();
 	if (hero.mesh != null) {
-		hero.AABBmesh.position.y = hero.mesh.position.y + hero.height/2;
+		hero.AABBmesh.position.y = hero.mesh.position.y + hero.height / 2;
 		hero.AABBmesh.position.x = hero.mesh.position.x + .8;
-		// hero.moveWithCollisions(down);
-		// m.moveWithCollisions(down);
-		// if (!platforms[0].intersectsMesh(hero.AABBmesh, false)) {
 		hero.mesh.moveWithCollisions(down);
 	}
-	if (day){
-		
-			// During the day, the direct light is yellow
-			light1.diffuse = new BABYLON.Color3(1, 1, 0);
-			// light1.setEnabled(false);
-			// Changing background colour
-			scene.clearColor = new BABYLON.Color3(0.8, 0.8, 1);
-			
-	} else if (!day){
-			
-			// During the night, the direct light is blue
-			light1.diffuse = new BABYLON.Color3(0.2, 0.2, 1);
-			// light1.setEnabled(false);
-			// Changing the background colour when its night
-			scene.clearColor = new BABYLON.Color3(0, 0, 0.2);	
-	}	
+
+	if (lightButtonClicked) {
+		// Enable the platforms depending on day or night
+		enablePlatforms(day);
+		lightButtonClicked = false;
+	}
+
+	if (day) {
+		// During the day, the direct light is yellow
+		light1.diffuse = new BABYLON.Color3(1, 1, 0);
+		// light1.setEnabled(false);
+		// Changing background colour
+		scene.clearColor = new BABYLON.Color3(0.8, 0.8, 1);
+
+	} else if (!day) {
+		// During the night, the direct light is blue
+		light1.diffuse = new BABYLON.Color3(0.2, 0.2, 1);
+		// light1.setEnabled(false);
+		// Changing the background colour when its night
+		scene.clearColor = new BABYLON.Color3(0, 0, 0.2);
+	}
 });
 
 // Watch for browser/canvas resize events

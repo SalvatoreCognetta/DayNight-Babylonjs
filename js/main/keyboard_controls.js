@@ -59,6 +59,7 @@ scene.onBeforeRenderObservable.add(() => {
         keydown = true;
     }
     if (inputMap["l"] || inputMap["L"]) {
+        lightButtonClicked = true;
         keydown = true;
     }
 
@@ -87,7 +88,8 @@ scene.onBeforeRenderObservable.add(() => {
                     hero.currentAnimation = animation.IDLETOWALK;
                     rotateToWalkAnimationGroup.play();
                 }
-            } else if (inputMap["l"] || inputMap["L"]) {
+            } 
+            if (inputMap["l"] || inputMap["L"]) {
                 day = !day;
             }
         }

@@ -10,8 +10,8 @@ function enableCollision(scene, camera) {
 	camera.applyGravity = true;
 
 	//Set the ellipsoid around the camera (e.g. your player's size)
-    camera.ellipsoid = new BABYLON.Vector3(1, 1, 1);
-    
+	camera.ellipsoid = new BABYLON.Vector3(1, 1, 1);
+
 }
 
 /**
@@ -19,11 +19,15 @@ function enableCollision(scene, camera) {
  * collide with a platform on top
  */
 function checkHeadCollision() {
-	platforms.forEach(function(platform) {
+	platforms.forEach(function (platform) {
 		if (platform.mesh.position.y > hero.mesh.position.y) {
-			if (platform.mesh.intersectsMesh(hero.AABBmesh, false)) {
-				console.log("Head collision");
-				hero.headCollision = true;
+			if (platform.show == objShow.ALWAYS ||
+				(day && platform.show == objShow.DAY) ||
+				(!day && platform.show == objShow.NIGHT)) {
+				if (platform.mesh.intersectsMesh(hero.AABBmesh, false)) {
+					console.log("Head collision");
+					hero.headCollision = true;
+				}
 			}
 		}
 	});
@@ -35,14 +39,18 @@ function checkHeadCollision() {
  * @param {number} direction  of the character (1 for right, -1 for left)
  */
 function checkLateralCollision(direction) {
-	platforms.forEach(function(platform) {
+	platforms.forEach(function (platform) {
 		var collisionDetected = false;
 		if (direction * platform.mesh.position.x > 0) {
-			if (platform.mesh.intersectsMesh(hero.AABBmesh, false)) {
-				console.log("Lateral collision");
-				hero.lateralCollision = true;
-				collisionDetected = true;
-				// hero.headCollision = true;
+			if (platform.show == objShow.ALWAYS ||
+				(day && platform.show == objShow.DAY) ||
+				(!day && platform.show == objShow.NIGHT)) {
+				if (platform.mesh.intersectsMesh(hero.AABBmesh, false)) {
+					console.log("Lateral collision");
+					hero.lateralCollision = true;
+					collisionDetected = true;
+					// hero.headCollision = true;
+				}
 			}
 		}
 
