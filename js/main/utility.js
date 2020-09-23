@@ -11,6 +11,7 @@ function addPlatform(material, platformWidth, position, showGroup = objShow.ALWA
 	if (rotate)
 		mesh.rotate(new BABYLON.Vector3(0, 0, 1), Math.PI / 2);
 	mesh.checkCollisions = true;
+	mesh.material = material;
 
 	if (ground) {
 		// // Create ground collider

@@ -11,7 +11,7 @@ var platforms = [];
 var zPosition = 5;
 
 var platformDepth = 30;
-var platformHeight = 2;
+var platformHeight = 5;
 var platformWidthSmall = 5;
 var platformWidthMedium = 20;
 var platformWidthBig = 50;
@@ -62,11 +62,14 @@ var createScene = function () {
  */
 var createRoom = function () {
 	// Ground
-	addPlatform(null, groundWidth, groundPosition, objShow.ALWAYS, true, false);
+	var groundMaterial = new BABYLON.StandardMaterial("material", scene);
+	var groundTexture = new BABYLON.Texture("../../images/ground.png", scene);
+	groundMaterial.diffuseTexture = groundTexture;
+	addPlatform(groundMaterial, groundWidth, groundPosition, objShow.ALWAYS, true, false);
 	// Left wall
-	addPlatform(null, platformWidthBig * 2, new BABYLON.Vector3(-(groundWidth - platformHeight) / 2, platformWidthBig, 0), objShow.ALWAYS, false, true);
+	addPlatform(null, platformWidthBig * 2, new BABYLON.Vector3(-(groundWidth - platformHeight) / 2, platformWidthBig + platformHeight/2, 0), objShow.ALWAYS, false, true);
 	// Right wall
-	addPlatform(null, platformWidthBig * 2, new BABYLON.Vector3((groundWidth - platformHeight) / 2, platformWidthBig, 0), objShow.ALWAYS, false, true);
+	addPlatform(null, platformWidthBig * 2, new BABYLON.Vector3((groundWidth - platformHeight) / 2, platformWidthBig + platformHeight/2, 0), objShow.ALWAYS, false, true);
 
 	addPlatform(null, platformWidthMedium, new BABYLON.Vector3(2, 23, 0), objShow.NIGHT, false, false);
 }

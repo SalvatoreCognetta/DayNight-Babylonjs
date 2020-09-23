@@ -41,7 +41,12 @@ function checkHeadCollision() {
 function checkLateralCollision(direction) {
 	platforms.forEach(function (platform) {
 		var collisionDetected = false;
-		if (direction * platform.mesh.position.x > 0) {
+		if ((hero.mesh.position.x < platform.mesh.position.x && direction == 1) ||
+			(hero.mesh.position.x > platform.mesh.position.x && direction == -1)) {
+			// console.log("hero pos: ", hero.mesh.position.x);
+			// console.log("plat pos: ", platform.mesh.position.x);
+			// console.log("plat show: ", platform.show);
+			// console.log("day: ", day);
 			if (platform.show == objShow.ALWAYS ||
 				(day && platform.show == objShow.DAY) ||
 				(!day && platform.show == objShow.NIGHT)) {
@@ -49,13 +54,17 @@ function checkLateralCollision(direction) {
 					console.log("Lateral collision");
 					hero.lateralCollision = true;
 					collisionDetected = true;
+					// console.log("Collision detected: ", collisionDetected);
+					// console.log("Collision hero: ", hero.lateralCollision);
 					// hero.headCollision = true;
 				}
 			}
 		}
 
 		// Reset the lateral collision boolean 
-		if (!collisionDetected)
-			hero.lateralCollision = false;
+		if (!collisionDetected) {
+			// hero.lateralCollision = false;
+			console.log("changing lateral collision");
+		}
 	});
 }
