@@ -34,13 +34,13 @@ var createScene = function () {
 	camera = new BABYLON.ArcRotateCamera("Camera", Math.PI / 2, Math.PI / 2, 2, new BABYLON.Vector3(0, 10, -120), scene);
 	camera.attachControl(canvas, true);
 
-
+	
 	// Enable physics
 	// scene.enablePhysics(new BABYLON.Vector3(0,-10,0), new BABYLON.AmmoJSPlugin());	
 
 	// Enable collision
 	enableCollision(scene, camera);
-
+	
 	// Add ground and walls to the scene
 	createRoom();
 
@@ -96,7 +96,7 @@ var createHero = function (camera, position = hero.startingPosition) {
 
 		// COLLISION DETECTION - Say that the mesh character will be collisionable
 		hero.checkCollisions = true;
-
+		
 
 		hero.mesh.onCollide = function (collidedMesh) {
 			if (collidedMesh.position.y < hero.mesh.position.y - 1) {
@@ -161,12 +161,16 @@ var createLamp = function () {
 		lantern.mesh.rotation = lantern.startingOrientation;
 		lantern.mesh.scaling = lantern.scale;
 		//camera.target 	= hero.mesh;
-
+		
 	})
+	
 }
 
 var scene = createScene(); //Call the createScene function
 var light1 = new BABYLON.DirectionalLight("DirectionalLight1", new BABYLON.Vector3(0, -1, 1), scene);
+// Make certain surfaces glow
+var gl = new BABYLON.GlowLayer("glow", scene);
+		
 
 // Register a render loop to repeatedly render the scene
 engine.runRenderLoop(function () {
@@ -176,6 +180,27 @@ engine.runRenderLoop(function () {
 		hero.AABBmesh.position.x = hero.mesh.position.x + .8;
 		hero.mesh.moveWithCollisions(down);
 	}
+	if (day){
+		
+			// During the day, the direct light is yellow
+			light1.diffuse = new BABYLON.Color3(1, 1, 0);
+			// No glow
+			gl.intensity = 0;
+			// light1.setEnabled(false);
+			// Changing background colour
+			scene.clearColor = new BABYLON.Color3(0.8, 0.8, 1);
+			
+	} else if (!day){
+			
+			
+			// During the night, the direct light is blue
+			light1.diffuse = new BABYLON.Color3(0.2, 0.2, 1);
+			// Turn glow on for emissive objects
+			gl.intensity = 3;
+			// light1.setEnabled(false);
+			// Changing the background colour when its night
+			scene.clearColor = new BABYLON.Color3(0, 0, 0.2);	
+	}	
 
 	if (lightButtonClicked) {
 		// Enable the platforms depending on day or night
@@ -183,20 +208,6 @@ engine.runRenderLoop(function () {
 		lightButtonClicked = false;
 	}
 
-	if (day) {
-		// During the day, the direct light is yellow
-		light1.diffuse = new BABYLON.Color3(1, 1, 0);
-		// light1.setEnabled(false);
-		// Changing background colour
-		scene.clearColor = new BABYLON.Color3(0.8, 0.8, 1);
-
-	} else if (!day) {
-		// During the night, the direct light is blue
-		light1.diffuse = new BABYLON.Color3(0.2, 0.2, 1);
-		// light1.setEnabled(false);
-		// Changing the background colour when its night
-		scene.clearColor = new BABYLON.Color3(0, 0, 0.2);
-	}
 });
 
 // Watch for browser/canvas resize events
