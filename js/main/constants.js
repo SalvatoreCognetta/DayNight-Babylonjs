@@ -22,8 +22,15 @@ var rotationToIdleEnded = false;
 
 var direction = 1; // Direction of the hero (1: right, -1: left)
 
+// Light
+var lightDay;
+var lightNight;
 var day = true;
 var lightButtonClicked = true;
+
+
+// Platforms
+var platforms = [];
 
 const objShow = {
     ALWAYS  : 0,
@@ -31,4 +38,10 @@ const objShow = {
     NIGHT   : 2
 }
 
-var debug = true;
+var platformDepth = 30;
+var platformHeight = 5;
+var platformWidthSmall = 20;
+var platformWidthBig = 35;
+
+
+var debug = false;

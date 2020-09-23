@@ -39,8 +39,8 @@ function checkHeadCollision() {
  * @param {number} direction  of the character (1 for right, -1 for left)
  */
 function checkLateralCollision(direction) {
+	var collisionDetected = false;
 	platforms.forEach(function (platform) {
-		var collisionDetected = false;
 		if ((hero.mesh.position.x < platform.mesh.position.x && direction == 1) ||
 			(hero.mesh.position.x > platform.mesh.position.x && direction == -1)) {
 			// console.log("hero pos: ", hero.mesh.position.x);
@@ -61,10 +61,10 @@ function checkLateralCollision(direction) {
 			}
 		}
 
-		// Reset the lateral collision boolean 
-		if (!collisionDetected) {
-			// hero.lateralCollision = false;
-			console.log("changing lateral collision");
-		}
 	});
+	// Reset the lateral collision boolean 
+	if (!collisionDetected) {
+		hero.lateralCollision = false;
+		console.log("changing lateral collision");
+	}
 }

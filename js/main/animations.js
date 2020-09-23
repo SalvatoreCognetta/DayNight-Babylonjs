@@ -3,13 +3,13 @@
  * with the specified values
  * @param {Array} values array of values
  */
-var createAnimationKeys = function(values) {
+var createAnimationKeys = function (values) {
 	var keys = [];
-	var num_values = values.length-1;
+	var num_values = values.length - 1;
 
 	for (var i = 0; i < values.length; i++) {
 		keys.push({
-			frame: i*framerate/num_values, // We subdivide the framerate in n part, each of which has it's own value
+			frame: i * framerate / num_values, // We subdivide the framerate in n part, each of which has it's own value
 			value: values[i] // The value of the animation
 		});
 	}
@@ -27,26 +27,26 @@ var idleAnimationGroup;
 var rotateToWalkAnimationGroup;
 var rotateToIdleAnimationGroup;
 var jumpAnimationGroup;
-//var lanternAnimationGroup;
+var lanternAnimationGroup;
 
 function initializeGroupsAnimation() {
 	walkAnimationGroup = new BABYLON.AnimationGroup("walkGroup");
 	idleAnimationGroup = new BABYLON.AnimationGroup("idleGroup");
 	rotateToWalkAnimationGroup = new BABYLON.AnimationGroup("rotateToWalkGroup");
 	rotateToIdleAnimationGroup = new BABYLON.AnimationGroup("rotateToIdleGroup");
-	//lanternAnimationGroup = new BABYLON.AnimationGroup("lanternSwing");
+	lanternAnimationGroup = new BABYLON.AnimationGroup("lanternSwing");
 }
 
 // Create walk animation
-function createWalkAnimation() {	
+function createWalkAnimation() {
 	//**********************TORSO**********************//
 	var walkTorso = new BABYLON.Animation("walkTorso", "rotation", framerate, BABYLON.Animation.ANIMATIONTYPE_VECTOR3, BABYLON.Animation.ANIMATIONLOOPMODE_CYCLE);
 	var torsoRotation = scene.getNodeByName('torso').rotation.clone();
 	var keys = createAnimationKeys([
-		torsoRotation, 
-		new BABYLON.Vector3(torsoRotation.x, torsoRotation.y - BABYLON.Tools.ToRadians(3), torsoRotation.z), 
-		torsoRotation, 
-		new BABYLON.Vector3(torsoRotation.x, torsoRotation.y + BABYLON.Tools.ToRadians(3), torsoRotation.z), 
+		torsoRotation,
+		new BABYLON.Vector3(torsoRotation.x, torsoRotation.y - BABYLON.Tools.ToRadians(3), torsoRotation.z),
+		torsoRotation,
+		new BABYLON.Vector3(torsoRotation.x, torsoRotation.y + BABYLON.Tools.ToRadians(3), torsoRotation.z),
 		torsoRotation
 	]); // An array with all animation keys
 	walkTorso.setKeys(keys); // Adding the animation array to the animation object
@@ -57,9 +57,9 @@ function createWalkAnimation() {
 	var walkArmLeft = new BABYLON.Animation("walkArmLeft", "rotation", framerate, BABYLON.Animation.ANIMATIONTYPE_VECTOR3, BABYLON.Animation.ANIMATIONLOOPMODE_CYCLE);
 	var armLeftUpperRotation = scene.getNodeByName('arm_left_upper.001').rotation.clone();
 	var keys = createAnimationKeys([
-		armLeftUpperRotation, 
-		new BABYLON.Vector3(armLeftUpperRotation.x - BABYLON.Tools.ToRadians(15)), 
-		armLeftUpperRotation, 
+		armLeftUpperRotation,
+		new BABYLON.Vector3(armLeftUpperRotation.x - BABYLON.Tools.ToRadians(15)),
+		armLeftUpperRotation,
 		new BABYLON.Vector3(armLeftUpperRotation.x + BABYLON.Tools.ToRadians(15)),
 		armLeftUpperRotation
 	]); // An array with all animation keys
@@ -73,9 +73,9 @@ function createWalkAnimation() {
 	var armRightUpperRotation = scene.getNodeByName('arm_right_upper.001').rotation.clone();
 	var keys = createAnimationKeys([
 		armRightUpperRotation,
-		new BABYLON.Vector3(armRightUpperRotation.x + BABYLON.Tools.ToRadians(15)), 
+		new BABYLON.Vector3(armRightUpperRotation.x + BABYLON.Tools.ToRadians(15)),
 		armRightUpperRotation,
-		new BABYLON.Vector3(armRightUpperRotation.x - BABYLON.Tools.ToRadians(15)), 
+		new BABYLON.Vector3(armRightUpperRotation.x - BABYLON.Tools.ToRadians(15)),
 		armRightUpperRotation
 	]); // An array with all animation keys
 	walkArmRight.setKeys(keys); // Adding the animation array to the animation object
@@ -87,9 +87,9 @@ function createWalkAnimation() {
 	var legLeftRotation = scene.getNodeByName('leg_left').rotation.clone();
 	var keys = createAnimationKeys([
 		legLeftRotation,
-		new BABYLON.Vector3(legLeftRotation.x + BABYLON.Tools.ToRadians(50)), 
+		new BABYLON.Vector3(legLeftRotation.x + BABYLON.Tools.ToRadians(50)),
 		legLeftRotation,
-		new BABYLON.Vector3(legLeftRotation.x - BABYLON.Tools.ToRadians(50)), 
+		new BABYLON.Vector3(legLeftRotation.x - BABYLON.Tools.ToRadians(50)),
 		legLeftRotation
 	]); // An array with all animation keys
 	walkLegLeft.setKeys(keys); // Adding the animation array to the animation object
@@ -101,9 +101,9 @@ function createWalkAnimation() {
 	var legRightRotation = scene.getNodeByName('leg_right').rotation.clone();
 	var keys = createAnimationKeys([
 		legRightRotation,
-		new BABYLON.Vector3(legRightRotation.x - BABYLON.Tools.ToRadians(50)), 
-		legRightRotation, 
-		new BABYLON.Vector3(legRightRotation.x + BABYLON.Tools.ToRadians(50)), 
+		new BABYLON.Vector3(legRightRotation.x - BABYLON.Tools.ToRadians(50)),
+		legRightRotation,
+		new BABYLON.Vector3(legRightRotation.x + BABYLON.Tools.ToRadians(50)),
 		legRightRotation
 	]); // An array with all animation keys
 	walkLegRight.setKeys(keys); // Adding the animation array to the animation object
@@ -115,7 +115,7 @@ function createWalkAnimation() {
 function createIdleAnimation() {
 	//**********************HEAD**********************//
 	//Position of left arm to compute an up and down animation
-	var startPosHead	= scene.getNodeByName('head').position.y;
+	var startPosHead = scene.getNodeByName('head').position.y;
 
 	var idleHead = new BABYLON.Animation("idleHead", "position.y", framerate, BABYLON.Animation.ANIMATIONTYPE_FLOAT, BABYLON.Animation.ANIMATIONLOOPMODE_CYCLE);
 	var keys = createAnimationKeys([startPosHead, startPosHead - .05, startPosHead, startPosHead + .05, startPosHead]); // An array with all animation keys
@@ -125,20 +125,20 @@ function createIdleAnimation() {
 
 	//**********************LEFT ARM**********************//
 	//Position of left arm to compute an up and down animation
-	var startPosL	= scene.getNodeByName('arm_left_upper.001').position.y;
+	var startPosL = scene.getNodeByName('arm_left_upper.001').position.y;
 
 	var idleArmLeft = new BABYLON.Animation("idleArmLeft", "position.y", framerate, BABYLON.Animation.ANIMATIONTYPE_FLOAT, BABYLON.Animation.ANIMATIONLOOPMODE_CYCLE);
-	var keys = createAnimationKeys([startPosL, startPosL - .05, startPosL, startPosL + .05, startPosL]); // An array with all animation keys
+	var keys = createAnimationKeys([startPosL, startPosL - .1, startPosL, startPosL + .1, startPosL]); // An array with all animation keys
 	idleArmLeft.setKeys(keys); // Adding the animation array to the animation object
 	// Use the addTargetedAnimation method to link the animations with the meshes and add these to the groups
 	idleAnimationGroup.addTargetedAnimation(idleArmLeft, scene.getNodeByName('arm_left_upper.001'));
-	
+
 	//**********************RIGHT ARM**********************//
 	//Position of right arm to compute an up and down animation
-	var startPosR	= scene.getNodeByName('arm_right_upper.001').position.y;
+	var startPosR = scene.getNodeByName('arm_right_upper.001').position.y;
 
 	var idleArmRight = new BABYLON.Animation("idleArmRight", "position.y", framerate, BABYLON.Animation.ANIMATIONTYPE_FLOAT, BABYLON.Animation.ANIMATIONLOOPMODE_CYCLE);
-	var keys = createAnimationKeys([startPosR, startPosR - .05, startPosR, startPosR + .05, startPosR]); // An array with all animation keys
+	var keys = createAnimationKeys([startPosR, startPosR - .1, startPosR, startPosR + .1, startPosR]); // An array with all animation keys
 	idleArmRight.setKeys(keys); // Adding the animation array to the animation object
 	// Use the addTargetedAnimation method to link the animations with the meshes and add these to the groups
 	idleAnimationGroup.addTargetedAnimation(idleArmRight, scene.getNodeByName('arm_right_upper.001'));
@@ -150,7 +150,7 @@ function createIdleAnimation() {
 function createRotateToWalkAnimation() {
 	//**********************TORSO**********************//
 	var rotateTorso = new BABYLON.Animation("rotateToWalkTorso", "rotation", framerate, BABYLON.Animation.ANIMATIONTYPE_VECTOR3, BABYLON.Animation.ANIMATIONLOOPMODE_CYCLE);
-	var keys = createAnimationKeys([Vec3DegToRady(0), Vec3DegToRady(hero.walkDirecton*15), Vec3DegToRady(hero.walkDirecton*30), Vec3DegToRady(hero.walkDirecton*45), Vec3DegToRady(hero.walkDirecton*60), Vec3DegToRady(hero.walkDirecton*75), Vec3DegToRady(hero.walkDirecton*90)]); // An array with all animation keys
+	var keys = createAnimationKeys([Vec3DegToRady(0), Vec3DegToRady(hero.walkDirecton * 15), Vec3DegToRady(hero.walkDirecton * 30), Vec3DegToRady(hero.walkDirecton * 45), Vec3DegToRady(hero.walkDirecton * 60), Vec3DegToRady(hero.walkDirecton * 75), Vec3DegToRady(hero.walkDirecton * 90)]); // An array with all animation keys
 	rotateTorso.setKeys(keys); // Adding the animation array to the animation object
 	// Use the addTargetedAnimation method to link the animations with the meshes and add these to the groups
 	rotateToWalkAnimationGroup.addTargetedAnimation(rotateTorso, scene.getNodeByName('torso'));
@@ -158,23 +158,23 @@ function createRotateToWalkAnimation() {
 	//**********************LEFT ARM**********************//
 	var rotateArmLeft = new BABYLON.Animation("rotateArmLeft", "rotation", framerate, BABYLON.Animation.ANIMATIONTYPE_VECTOR3, BABYLON.Animation.ANIMATIONLOOPMODE_CYCLE);
 	var armLeftUpperRotation = scene.getNodeByName('arm_left_upper.001').rotation.clone();
-	var keys = createAnimationKeys([armLeftUpperRotation, new BABYLON.Vector3(0,0,0)]); // An array with all animation keys
+	var keys = createAnimationKeys([armLeftUpperRotation, new BABYLON.Vector3(0, 0, 0)]); // An array with all animation keys
 	rotateArmLeft.setKeys(keys); // Adding the animation array to the animation object
 	// Use the addTargetedAnimation method to link the animations with the meshes and add these to the groups
 	rotateToWalkAnimationGroup.addTargetedAnimation(rotateArmLeft, scene.getNodeByName('arm_left_upper.001'));
-	
+
 	//**********************RIGHT ARM**********************//
 	var rotateArmRight = new BABYLON.Animation("rotateArmRight", "rotation", framerate, BABYLON.Animation.ANIMATIONTYPE_VECTOR3, BABYLON.Animation.ANIMATIONLOOPMODE_CYCLE);
 	var armRightUpperRotation = scene.getNodeByName('arm_right_upper.001').rotation.clone();
-	var keys = createAnimationKeys([armRightUpperRotation, new BABYLON.Vector3(0,0,0)]); // An array with all animation keys
+	var keys = createAnimationKeys([armRightUpperRotation, new BABYLON.Vector3(0, 0, 0)]); // An array with all animation keys
 	rotateArmRight.setKeys(keys); // Adding the animation array to the animation object
 	// Use the addTargetedAnimation method to link the animations with the meshes and add these to the groups
 	rotateToWalkAnimationGroup.addTargetedAnimation(rotateArmRight, scene.getNodeByName('arm_right_upper.001'));
-	
+
 	//**********************LEFT LEG**********************//
 	var rotateLegLeft = new BABYLON.Animation("rotateLegLeft", "rotation", framerate, BABYLON.Animation.ANIMATIONTYPE_VECTOR3, BABYLON.Animation.ANIMATIONLOOPMODE_CYCLE);
 	var legLeftRotation = scene.getNodeByName('leg_left').rotation.clone();
-	var keys = createAnimationKeys([legLeftRotation, new BABYLON.Vector3(0,0,0)]); // An array with all animation keys
+	var keys = createAnimationKeys([legLeftRotation, new BABYLON.Vector3(0, 0, 0)]); // An array with all animation keys
 	rotateLegLeft.setKeys(keys); // Adding the animation array to the animation object
 	// Use the addTargetedAnimation method to link the animations with the meshes and add these to the groups
 	rotateToWalkAnimationGroup.addTargetedAnimation(rotateLegLeft, scene.getNodeByName('leg_left'));
@@ -182,7 +182,7 @@ function createRotateToWalkAnimation() {
 	//**********************RIGHT LEG**********************//
 	var rotateLegRight = new BABYLON.Animation("rotateLegRight", "rotation", framerate, BABYLON.Animation.ANIMATIONTYPE_VECTOR3, BABYLON.Animation.ANIMATIONLOOPMODE_CYCLE);
 	var legRightRotation = scene.getNodeByName('leg_right').rotation.clone();
-	var keys = createAnimationKeys([legRightRotation, new BABYLON.Vector3(0,0,0)]); // An array with all animation keys
+	var keys = createAnimationKeys([legRightRotation, new BABYLON.Vector3(0, 0, 0)]); // An array with all animation keys
 	rotateLegRight.setKeys(keys); // Adding the animation array to the animation object
 	// Use the addTargetedAnimation method to link the animations with the meshes and add these to the groups
 	rotateToWalkAnimationGroup.addTargetedAnimation(rotateLegRight, scene.getNodeByName('leg_right'));
@@ -194,7 +194,7 @@ function createRotateToWalkAnimation() {
 function createRotateToIdleAnimation() {
 	//**********************TORSO**********************//
 	var rotateTorso = new BABYLON.Animation("rotateToIdleTorso", "rotation", framerate, BABYLON.Animation.ANIMATIONTYPE_VECTOR3, BABYLON.Animation.ANIMATIONLOOPMODE_CYCLE);
-	var keys = createAnimationKeys([Vec3DegToRady(hero.walkDirecton*90),Vec3DegToRady(hero.walkDirecton*75),Vec3DegToRady(hero.walkDirecton*60),Vec3DegToRady(hero.walkDirecton*45),Vec3DegToRady(hero.walkDirecton*30),Vec3DegToRady(hero.walkDirecton*15),Vec3DegToRady(0)]); // An array with all animation keys
+	var keys = createAnimationKeys([Vec3DegToRady(hero.walkDirecton * 90), Vec3DegToRady(hero.walkDirecton * 75), Vec3DegToRady(hero.walkDirecton * 60), Vec3DegToRady(hero.walkDirecton * 45), Vec3DegToRady(hero.walkDirecton * 30), Vec3DegToRady(hero.walkDirecton * 15), Vec3DegToRady(0)]); // An array with all animation keys
 	rotateTorso.setKeys(keys); // Adding the animation array to the animation object
 	// Use the addTargetedAnimation method to link the animations with the meshes and add these to the groups
 	rotateToIdleAnimationGroup.addTargetedAnimation(rotateTorso, scene.getNodeByName('torso'));
@@ -202,23 +202,23 @@ function createRotateToIdleAnimation() {
 	//**********************LEFT ARM**********************//
 	var rotateArmLeft = new BABYLON.Animation("rotateArmLeft", "rotation", framerate, BABYLON.Animation.ANIMATIONTYPE_VECTOR3, BABYLON.Animation.ANIMATIONLOOPMODE_CYCLE);
 	var armLeftUpperRotation = scene.getNodeByName('arm_left_upper.001').rotation.clone();
-	var keys = createAnimationKeys([armLeftUpperRotation, new BABYLON.Vector3(0,0,0)]); // An array with all animation keys
+	var keys = createAnimationKeys([armLeftUpperRotation, new BABYLON.Vector3(0, 0, 0)]); // An array with all animation keys
 	rotateArmLeft.setKeys(keys); // Adding the animation array to the animation object
 	// Use the addTargetedAnimation method to link the animations with the meshes and add these to the groups
 	rotateToIdleAnimationGroup.addTargetedAnimation(rotateArmLeft, scene.getNodeByName('arm_left_upper.001'));
-	
+
 	//**********************RIGHT ARM**********************//
 	var rotateArmRight = new BABYLON.Animation("rotateArmRight", "rotation", framerate, BABYLON.Animation.ANIMATIONTYPE_VECTOR3, BABYLON.Animation.ANIMATIONLOOPMODE_CYCLE);
 	var armRightUpperRotation = scene.getNodeByName('arm_right_upper.001').rotation.clone();
-	var keys = createAnimationKeys([armRightUpperRotation, new BABYLON.Vector3(0,0,0)]); // An array with all animation keys
+	var keys = createAnimationKeys([armRightUpperRotation, new BABYLON.Vector3(0, 0, 0)]); // An array with all animation keys
 	rotateArmRight.setKeys(keys); // Adding the animation array to the animation object
 	// Use the addTargetedAnimation method to link the animations with the meshes and add these to the groups
 	rotateToIdleAnimationGroup.addTargetedAnimation(rotateArmRight, scene.getNodeByName('arm_right_upper.001'));
-	
+
 	//**********************LEFT LEG**********************//
 	var rotateLegLeft = new BABYLON.Animation("rotateLegLeft", "rotation", framerate, BABYLON.Animation.ANIMATIONTYPE_VECTOR3, BABYLON.Animation.ANIMATIONLOOPMODE_CYCLE);
 	var legLeftRotation = scene.getNodeByName('leg_left').rotation.clone();
-	var keys = createAnimationKeys([legLeftRotation, new BABYLON.Vector3(0,0,0)]); // An array with all animation keys
+	var keys = createAnimationKeys([legLeftRotation, new BABYLON.Vector3(0, 0, 0)]); // An array with all animation keys
 	rotateLegLeft.setKeys(keys); // Adding the animation array to the animation object
 	// Use the addTargetedAnimation method to link the animations with the meshes and add these to the groups
 	rotateToIdleAnimationGroup.addTargetedAnimation(rotateLegLeft, scene.getNodeByName('leg_left'));
@@ -226,7 +226,7 @@ function createRotateToIdleAnimation() {
 	//**********************RIGHT LEG**********************//
 	var rotateLegRight = new BABYLON.Animation("rotateLegRight", "rotation", framerate, BABYLON.Animation.ANIMATIONTYPE_VECTOR3, BABYLON.Animation.ANIMATIONLOOPMODE_CYCLE);
 	var legRightRotation = scene.getNodeByName('leg_right').rotation.clone();
-	var keys = createAnimationKeys([legRightRotation, new BABYLON.Vector3(0,0,0)]); // An array with all animation keys
+	var keys = createAnimationKeys([legRightRotation, new BABYLON.Vector3(0, 0, 0)]); // An array with all animation keys
 	rotateLegRight.setKeys(keys); // Adding the animation array to the animation object
 	// Use the addTargetedAnimation method to link the animations with the meshes and add these to the groups
 	rotateToIdleAnimationGroup.addTargetedAnimation(rotateLegRight, scene.getNodeByName('leg_right'));
@@ -238,41 +238,41 @@ function createRotateToIdleAnimation() {
 }
 
 
-function createDanceAnimation(){
+function createDanceAnimation() {
 
-    danceAnimationGroup = new BABYLON.AnimationGroup("danceGroup");
+	danceAnimationGroup = new BABYLON.AnimationGroup("danceGroup");
 
-    // Left Upper Arm
-    var danceLeftArm = new BABYLON.Animation("danceLeftArm", "rotation", framerate, BABYLON.Animation.ANIMATIONTYPE_VECTOR3, BABYLON.Animation.ANIMATIONLOOPMODE_CYCLE);
-    var keys = createAnimationKeys([Vec3DegToRadx(0), Vec3DegToRadx(80), Vec3DegToRadx(160), Vec3DegToRadx(80), Vec3DegToRadx(0)]);
-    danceLeftArm.setKeys(keys);
-    danceAnimationGroup.addTargetedAnimation(danceLeftArm, scene.getNodeByName('arm_left_upper.001'));
+	// Left Upper Arm
+	var danceLeftArm = new BABYLON.Animation("danceLeftArm", "rotation", framerate, BABYLON.Animation.ANIMATIONTYPE_VECTOR3, BABYLON.Animation.ANIMATIONLOOPMODE_CYCLE);
+	var keys = createAnimationKeys([Vec3DegToRadx(0), Vec3DegToRadx(80), Vec3DegToRadx(160), Vec3DegToRadx(80), Vec3DegToRadx(0)]);
+	danceLeftArm.setKeys(keys);
+	danceAnimationGroup.addTargetedAnimation(danceLeftArm, scene.getNodeByName('arm_left_upper.001'));
 
-    //Right Upper Arm
-    var danceRightArm = new BABYLON.Animation("danceRightArm", "rotation", framerate, BABYLON.Animation.ANIMATIONTYPE_VECTOR3, BABYLON.Animation.ANIMATIONLOOPMODE_CYCLE);
-    var keys = createAnimationKeys([Vec3DegToRadx(0), Vec3DegToRadx(80), Vec3DegToRadx(160), Vec3DegToRadx(80), Vec3DegToRadx(0)]);
-    danceRightArm.setKeys(keys);
-    danceAnimationGroup.addTargetedAnimation(danceRightArm, scene.getNodeByName('arm_right_upper.001'));
+	// Right Upper Arm
+	var danceRightArm = new BABYLON.Animation("danceRightArm", "rotation", framerate, BABYLON.Animation.ANIMATIONTYPE_VECTOR3, BABYLON.Animation.ANIMATIONLOOPMODE_CYCLE);
+	var keys = createAnimationKeys([Vec3DegToRadx(0), Vec3DegToRadx(80), Vec3DegToRadx(160), Vec3DegToRadx(80), Vec3DegToRadx(0)]);
+	danceRightArm.setKeys(keys);
+	danceAnimationGroup.addTargetedAnimation(danceRightArm, scene.getNodeByName('arm_right_upper.001'));
 
-    // Left Lower Arm
-    var danceLeftLowerArm = new BABYLON.Animation("danceLeftLowerArm", "rotation", framerate, BABYLON.Animation.ANIMATIONTYPE_VECTOR3, BABYLON.Animation.ANIMATIONLOOPMODE_CYCLE);
-    var keys = createAnimationKeys([Vec3DegToRadx(0), Vec3DegToRadx(30), Vec3DegToRadx(60), Vec3DegToRadx(30), Vec3DegToRadx(0)]);
-    danceLeftLowerArm.setKeys(keys);
-    danceAnimationGroup.addTargetedAnimation(danceLeftLowerArm, scene.getNodeByName('arm_left_lower'));
+	// Left Lower Arm
+	var danceLeftLowerArm = new BABYLON.Animation("danceLeftLowerArm", "rotation", framerate, BABYLON.Animation.ANIMATIONTYPE_VECTOR3, BABYLON.Animation.ANIMATIONLOOPMODE_CYCLE);
+	var keys = createAnimationKeys([Vec3DegToRadx(0), Vec3DegToRadx(30), Vec3DegToRadx(60), Vec3DegToRadx(30), Vec3DegToRadx(0)]);
+	danceLeftLowerArm.setKeys(keys);
+	danceAnimationGroup.addTargetedAnimation(danceLeftLowerArm, scene.getNodeByName('arm_left_lower'));
 
-    //Right Lower Arm
-    var danceRightLowerArm = new BABYLON.Animation("danceRightLowerArm", "rotation", framerate, BABYLON.Animation.ANIMATIONTYPE_VECTOR3, BABYLON.Animation.ANIMATIONLOOPMODE_CYCLE);
-    var keys = createAnimationKeys([Vec3DegToRadx(0), Vec3DegToRadx(30), Vec3DegToRadx(60), Vec3DegToRadx(30), Vec3DegToRadx(0)]);
-    danceRightLowerArm.setKeys(keys);
-    danceAnimationGroup.addTargetedAnimation(danceRightLowerArm, scene.getNodeByName('arm_right_lower'));
+	// Right Lower Arm
+	var danceRightLowerArm = new BABYLON.Animation("danceRightLowerArm", "rotation", framerate, BABYLON.Animation.ANIMATIONTYPE_VECTOR3, BABYLON.Animation.ANIMATIONLOOPMODE_CYCLE);
+	var keys = createAnimationKeys([Vec3DegToRadx(0), Vec3DegToRadx(30), Vec3DegToRadx(60), Vec3DegToRadx(30), Vec3DegToRadx(0)]);
+	danceRightLowerArm.setKeys(keys);
+	danceAnimationGroup.addTargetedAnimation(danceRightLowerArm, scene.getNodeByName('arm_right_lower'));
 
-    //Defining the torso positions at each key frame
-    var startPosTorso = scene.getNodeByName("torso").position;
-    var upTorsoPos = new BABYLON.Vector3(startPosTorso.x, startPosTorso.y + 0.5, startPosTorso.z);
-    var upTorsoPos2 = new BABYLON.Vector3(startPosTorso.x, startPosTorso.y + 1, startPosTorso.z);
-    
-    //Torso dance animation
-    var danceTorso = new BABYLON.Animation("danceTorso", "position", framerate, BABYLON.Animation.ANIMATIONTYPE_VECTOR3, BABYLON.Animation.ANIMATIONLOOPMODE_CYCLE);
+	// Defining the torso positions at each key frame
+	var startPosTorso = scene.getNodeByName("torso").position;
+	var upTorsoPos = new BABYLON.Vector3(startPosTorso.x, startPosTorso.y + 0.5, startPosTorso.z);
+	var upTorsoPos2 = new BABYLON.Vector3(startPosTorso.x, startPosTorso.y + 1, startPosTorso.z);
+
+	// Torso dance animation
+	var danceTorso = new BABYLON.Animation("danceTorso", "position", framerate, BABYLON.Animation.ANIMATIONTYPE_VECTOR3, BABYLON.Animation.ANIMATIONLOOPMODE_CYCLE);
 	var keys = createAnimationKeys([startPosTorso, upTorsoPos, upTorsoPos2, upTorsoPos, startPosTorso]); // An array with all animation keys
 	danceTorso.setKeys(keys); // Adding the animation array to the animation object
 	// Use the addTargetedAnimation method to link the animations with the meshes and add these to the groups
@@ -281,22 +281,34 @@ function createDanceAnimation(){
 
 }
 
-function createLanternAnimation(){
-
+function createLanternAnimation() {
+	//**********************UPPER CHAIN**********************//
 	var chain1Swing = new BABYLON.Animation("chain1Swing", "rotation", framerate, BABYLON.Animation.ANIMATIONTYPE_VECTOR3, BABYLON.Animation.ANIMATIONLOOPMODE_CYCLE);
-	var keys = createAnimationKeys([Vec3DegToRadx(0), Vec3DegToRadx(30), Vec3DegToRadx(0), Vec3DegToRadx(-30), Vec3DegToRadx(0)]);
+	var keys = createAnimationKeys([Vec3DegToRadx(0), Vec3DegToRadx(10), Vec3DegToRadx(0), Vec3DegToRadx(-10), Vec3DegToRadx(0)]);
 	chain1Swing.setKeys(keys);
 	lanternAnimationGroup.addTargetedAnimation(chain1Swing, scene.getNodeByName('chain1'));
+
+	//**********************LOWER CHAIN**********************//
+	var chain2Swing = new BABYLON.Animation("chain2Swing", "rotation", framerate, BABYLON.Animation.ANIMATIONTYPE_VECTOR3, BABYLON.Animation.ANIMATIONLOOPMODE_CYCLE);
+	var keys = createAnimationKeys([Vec3DegToRadx(0), Vec3DegToRadx(10), Vec3DegToRadx(0), Vec3DegToRadx(-10), Vec3DegToRadx(0)]);
+	chain2Swing.setKeys(keys);
+	lanternAnimationGroup.addTargetedAnimation(chain2Swing, scene.getNodeByName('chain2'));
+	
+	//**********************LAMP**********************//
+	var chain2Swing = new BABYLON.Animation("chain2Swing", "rotation", framerate, BABYLON.Animation.ANIMATIONTYPE_VECTOR3, BABYLON.Animation.ANIMATIONLOOPMODE_CYCLE);
+	var keys = createAnimationKeys([Vec3DegToRadx(0), Vec3DegToRadx(8), Vec3DegToRadx(0), Vec3DegToRadx(-8), Vec3DegToRadx(0)]);
+	chain2Swing.setKeys(keys);
+	lanternAnimationGroup.addTargetedAnimation(chain2Swing, scene.getNodeByName('lantern'));
 
 }
 
 
 
-function initializeHeroAnimations() { 
+function initializeHeroAnimations() {
 	initializeGroupsAnimation();
-	createWalkAnimation();
+	// Create animations
 	createIdleAnimation();
-	//createLanternAnimation();
+	createWalkAnimation();
 
 	createRotateToWalkAnimation();
 	rotateToWalkAnimationGroup.onAnimationEndObservable.add(function () {
@@ -316,7 +328,7 @@ function initializeHeroAnimations() {
 			console.log("Rotate to idle ended");
 			// rotateToIdleAnimationGroup.reset();
 			rotationToIdleEnded = true;
-			
+
 			//Stop all animations besides Idle Anim when no key is down
 			walkAnimationGroup.reset();
 			walkAnimationGroup.stop();
@@ -327,6 +339,9 @@ function initializeHeroAnimations() {
 	});
 
 	createDanceAnimation();
-	
 }
 
+function initializeLampAnimations() {
+	createLanternAnimation();
+
+}

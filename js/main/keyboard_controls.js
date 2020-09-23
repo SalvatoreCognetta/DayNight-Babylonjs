@@ -1,11 +1,14 @@
 // Keyboard events
 var inputMap = {};
+var inputUpMap = {};
 scene.actionManager = new BABYLON.ActionManager(scene);
 scene.actionManager.registerAction(new BABYLON.ExecuteCodeAction(BABYLON.ActionManager.OnKeyDownTrigger, function (evt) {
     inputMap[evt.sourceEvent.key] = evt.sourceEvent.type == "keydown";
+    inputUpMap[evt.sourceEvent.key] = evt.sourceEvent.type == "keyup";
 }));
 scene.actionManager.registerAction(new BABYLON.ExecuteCodeAction(BABYLON.ActionManager.OnKeyUpTrigger, function (evt) {
     inputMap[evt.sourceEvent.key] = evt.sourceEvent.type == "keydown";
+    inputUpMap[evt.sourceEvent.key] = evt.sourceEvent.type == "keyup";
 }));
 
 
@@ -15,7 +18,7 @@ if (hero.mesh != null)
 scene.onBeforeRenderObservable.add(() => {
     var keydown = false;
     //Manage the movements of the character (e.g. position, direction)
-    if (inputMap["w"] || inputMap["W"] || inputMap[" "]) {
+    if (inputMap["w"] || inputMap["W"]) {
         // Jump
         if (hero.mesh.position.y < startingPosition + hero.maximumJumpHeight && hero.grounded && !hero.headCollision) {
             hero.mesh.moveWithCollisions(new BABYLON.Vector3(0, 1.5, 0));
@@ -63,8 +66,15 @@ scene.onBeforeRenderObservable.add(() => {
         keydown = true;
     }
 
+    // The hero cannot jump while in the air and the 
+    // w key is released
+    if (inputUpMap["w"] || inputUpMap["W"]) {
+        hero.grounded = false;
+    }
+
     if (hero.mesh != null && !keydown)
         startingPosition = hero.mesh.position.y;
+
 
     //Manage animations to be played  
     if (keydown) {
@@ -91,6 +101,12 @@ scene.onBeforeRenderObservable.add(() => {
             } 
             if (inputMap["l"] || inputMap["L"]) {
                 day = !day;
+                if (day) {
+                    lanternAnimationGroup.reset();
+                    lanternAnimationGroup.stop();
+                } else {
+                    lanternAnimationGroup.play(true);
+                }
             }
         }
     } else {

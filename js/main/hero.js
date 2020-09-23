@@ -2,7 +2,7 @@ var hero = {
     path : "../models/character/",
     name : "stone.gltf",
     mesh : null,
-    startingPosition : new BABYLON.Vector3(0, 20, -6),
+    startingPosition : new BABYLON.Vector3(-130, 20, -6),
 
     height : 10.899000000000001,
     headCollision : false,
