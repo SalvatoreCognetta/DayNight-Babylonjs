@@ -43,5 +43,4 @@ var platformHeight = 5;
 var platformWidthSmall = 20;
 var platformWidthBig = 35;
 
-
 var debug = false;

@@ -1,10 +1,34 @@
 /*****************************************************ENVIRONMENT UTILITY FUNCTION*****************************************************/
+var createGameUI = function () {
+	// UI
+	var advancedTexture = BABYLON.GUI.AdvancedDynamicTexture.CreateFullscreenUI("UI");
+	var UiPanel = new BABYLON.GUI.StackPanel();
+	UiPanel.width = "220px";
+	UiPanel.fontSize = "14px";
+	UiPanel.horizontalAlignment = BABYLON.GUI.Control.HORIZONTAL_ALIGNMENT_LEFT;
+	UiPanel.verticalAlignment = BABYLON.GUI.Control.VERTICAL_ALIGNMENT_TOP;
+	advancedTexture.addControl(UiPanel);
+
+	var menuBtn = BABYLON.GUI.Button.CreateSimpleButton("menuBtn", "Menu");
+	menuBtn.paddingTop = "10px";
+	menuBtn.width = "100px";
+	menuBtn.height = "50px";
+	menuBtn.color = "white";
+	menuBtn.background = "grey";
+	menuBtn.onPointerDownObservable.add(() => {
+		menuSelect.play();
+		// TODO show menu and stop game
+
+	});
+	UiPanel.addControl(menuBtn);
+}
+
 /**
  * Create the main character of the game
  * @camera camera of the scene
  * @position {BABYLON.Vector3} Vector that specifies the init position of the hero
  */
-var createHero = function (camera, position = hero.startingPosition) {
+var createHero = function (camera, position = hero.startingPosition, goalPosition) {
 	// The first parameter can be used to specify which mesh to import. Here we import all meshes
 	BABYLON.SceneLoader.ImportMesh("", hero.path, hero.name, scene, function (newMeshes) {
 		hero.mesh = newMeshes[0];
@@ -31,6 +55,7 @@ var createHero = function (camera, position = hero.startingPosition) {
 			}
 		}
 
+		hero.goalPosition = goalPosition;
 
 		var matBB = new BABYLON.StandardMaterial("matBB", scene);
 		matBB.emissiveColor = new BABYLON.Color3(1, 1, 1);
@@ -44,33 +69,6 @@ var createHero = function (camera, position = hero.startingPosition) {
 		hero.AABBmesh.ellipsoid = new BABYLON.Vector3(hero.AABBdimension / 2, hero.AABBdimension / 2 - 1, 10);
 		hero.AABBmesh.position = hero.mesh.position.clone();
 		hero.AABBmesh.scaling = new BABYLON.Vector3(1, Math.cos(Math.PI / 6), 1);
-
-
-		// // Add colliders
-		// var collidersVisible = false;
-		// var sphereCollider = BABYLON.Mesh.CreateSphere("sphere1", 16, 0.5, scene);
-		// sphereCollider.position.y = 0.08;
-		// sphereCollider.isVisible = collidersVisible;
-		// var boxCollider = BABYLON.Mesh.CreateBox("box1", 0.3, scene);
-		// boxCollider.position.y = -0.13;
-		// boxCollider.position.z = -0.13;
-		// boxCollider.isVisible = collidersVisible;
-
-		// // Create a physics root and add all children
-		// var physicsRoot = new BABYLON.Mesh("", scene);
-		// physicsRoot.addChild(newMeshes[0]);
-		// physicsRoot.addChild(boxCollider);
-		// physicsRoot.addChild(sphereCollider);
-		// physicsRoot.position.y+=3;
-
-		// // Enable physics on colliders first then physics root of the mesh
-		// boxCollider.physicsImpostor = new BABYLON.PhysicsImpostor(boxCollider, BABYLON.PhysicsImpostor.BoxImpostor, { mass: 0 }, scene);
-		// sphereCollider.physicsImpostor = new BABYLON.PhysicsImpostor(sphereCollider, BABYLON.PhysicsImpostor.SphereImpostor, { mass: 0 }, scene);
-		// physicsRoot.physicsImpostor = new BABYLON.PhysicsImpostor(physicsRoot, BABYLON.PhysicsImpostor.NoImpostor, { mass: 3 }, scene);
-
-		// // Orient the physics root
-		// physicsRoot.rotation.x = Math.PI/5;
-		// physicsRoot.rotation.z = Math.PI/6;
 	});
 }
 
@@ -82,15 +80,16 @@ var createLamp = function (position = lantern.startingPosition) {
 		lantern.mesh.rotation = lantern.startingOrientation;
 		lantern.mesh.scaling = lantern.scale;
 		initializeLampAnimations();
-	})
-
+	});
 }
 
 /**
  * Add platform to the scene with specified material, width and position
  * @param {BABYLON.MultiMaterial} material - Material to apply to the platform
  * @param {BABYLON.Vector3} platformDimension - Dimension of the platform
- * @param {finish} [finish = false] - tells if the platform is the finish or not
+ * @param {BABYLON.Vector3} position - Position of the platform
+ * @param {objShow} showGroup - Tells if the platform should be shown on day/night or alway
+ * @param {boolean} [finish = false] - Tells if the platform is the finish or not
  */
 function addPlatform(material, platformDimension, position, showGroup = objShow.ALWAYS, finish = false) {
 
@@ -100,23 +99,47 @@ function addPlatform(material, platformDimension, position, showGroup = objShow.
 	mesh.material = material;
 
 	if (finish) {
-		BABYLON.SceneLoader.ImportMesh("", finishGoal.path, finishGoal.name, scene, function (newMeshes) {
-			finishGoal.mesh = newMeshes[0];
-			finishGoal.mesh.position = mesh.position;
-			finishGoal.mesh.scaling = finishGoal.scaleFactor;
-		});
+		addFlag(mesh);
 	}
-
-	// if (ground) {
-	// // Create ground collider
-	// mesh.physicsImpostor = new BABYLON.PhysicsImpostor(mesh, BABYLON.PhysicsImpostor.BoxImpostor, { mass: 0, friction: 0.5, restitution: 0.7 }, scene);	
-	// }
 
 	var platform = new Platform(mesh, showGroup);
 	platforms.push(platform);
 }
 
+/**
+ * Add the flag model to a specified platform mesh
+ * @param {*} platform Mesh of the platform where we put the flag
+ */
+function addFlag(platform) {
+	BABYLON.SceneLoader.ImportMesh("", flagGoal.path, flagGoal.name, scene, function (newMeshes) {
+		flagGoal.mesh = newMeshes[0];
+		flagGoal.mesh.position = platform.position;
+		flagGoal.mesh.scaling = flagGoal.scaleFactor;
 
+		var matBB = new BABYLON.StandardMaterial("matBB", scene);
+		matBB.emissiveColor = new BABYLON.Color3(1, 1, 1);
+		matBB.wireframe = true;
+		if (!debug)
+			matBB.alpha = 0;
+
+		// AABB - Axis aligned bounding box
+		flagGoal.AABBmesh = BABYLON.Mesh.CreateBox("AABB", flagGoal.AABBdimension, scene);
+		flagGoal.AABBmesh.material = matBB;
+		flagGoal.AABBmesh.ellipsoid = new BABYLON.Vector3(flagGoal.AABBdimension / 2, flagGoal.AABBdimension / 2 - 1, 10);
+		flagGoal.AABBmesh.position = flagGoal.mesh.position.clone();
+		flagGoal.AABBmesh.position.y += flagGoal.AABBdimension;
+		flagGoal.AABBmesh.scaling = new BABYLON.Vector3(1, 2, 1);
+
+		initializeFlagAnimations();
+		flagAnimationGroup.play(true);
+	});
+}
+
+/**
+ * Enable all the day or night platforms,
+ * depending on the currente light situation
+ * @param {bool} day Boolean that says if it's day or night
+ */
 function enablePlatforms(day) {
 	platforms.forEach(function (platform) {
 		if (platform.show == objShow.DAY && day) {
@@ -132,6 +155,47 @@ function enablePlatforms(day) {
 			platform.mesh.setEnabled(true);
 		}
 	});
+}
+
+/**
+ * Checks if the hero has reached the goal
+ */
+function checkGoal() {
+	if (hero.mesh != null && flagGoal.AABBmesh.intersectsMesh(hero.AABBmesh, false) && !hero.goalReached) {
+		hero.goalReached = true;
+		stopAllHeroAnimations();
+		danceAnimationGroup.play(true);
+		winPhysincsBalls();
+		winSound.play();
+
+	}
+}
+
+/**
+ * When the player wins, ball falls from top
+ */
+function winPhysincsBalls() {
+	for (let i = 0; i < 10; i++) {
+		// Babylon built-in 'sphere' shape. Params: name, subdivs, size, scene
+		var sphere = BABYLON.Mesh.CreateSphere("sphere", 16, 2, scene);
+		// TODO Change colors/materials
+
+		// Move the sphere upward 1/2 its height
+		sphere.position = hero.mesh.position.clone();
+		var rng = Math.random() + 1;
+		var rngDirection = rng >= 1.5 ? 1 : -1;
+		sphere.position.y = hero.mesh.position.y + 30 + rngDirection * rng;
+		sphere.position.x += rngDirection * rng * 10;
+
+		sphere.physicsImpostor = new BABYLON.PhysicsImpostor(sphere, BABYLON.PhysicsImpostor.SphereImpostor, { mass: 1, restitution: 0.9 }, scene);
+	}
+
+	platforms.forEach((platform) => {
+		platform.mesh.physicsImpostor = new BABYLON.PhysicsImpostor(platform.mesh, BABYLON.PhysicsImpostor.BoxImpostor, { mass: 0, restitution: 0.9 }, scene);
+	});
+
+	hero.AABBmesh.physicsImpostor = new BABYLON.PhysicsImpostor(hero.AABBmesh, BABYLON.PhysicsImpostor.BoxImpostor, { mass: 0, restitution: 0.9 }, scene);
+
 }
 /*****************************************************ENVIRONMENT UTILITY FUNCTION*****************************************************/
 

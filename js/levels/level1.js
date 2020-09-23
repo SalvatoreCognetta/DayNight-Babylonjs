@@ -7,6 +7,8 @@ var wallDimension = new BABYLON.Vector3(5, 300, 30);
 var platformDimensionSmall = new BABYLON.Vector3(platformWidthSmall, platformHeight, platformDepth);
 var platformDimensionBig = new BABYLON.Vector3(platformWidthBig, platformHeight, platformDepth);
 
+var goalPosition = new BABYLON.Vector3(60, 90, 0); // new BABYLON.Vector3(-120, 20, -6);
+
 
 canvas = document.getElementById("renderCanvas"); // Get the canvas element
 engine = new BABYLON.Engine(canvas, true); // Generate the BABYLON 3D engine
@@ -28,24 +30,29 @@ var createScene = function () {
 	camera = new BABYLON.ArcRotateCamera("Camera", Math.PI / 2, Math.PI / 2, 2, new BABYLON.Vector3(0, 10, -120), scene);
 	camera.attachControl(canvas, true);
 
-
-	// Enable physics
-	// scene.enablePhysics(new BABYLON.Vector3(0,-10,0), new BABYLON.AmmoJSPlugin());	
-
 	// Enable collision
 	enableCollision(scene, camera);
+	
+	// Creates all the animation groups
+	initializeGroupsAnimation();
 
+	// Create Menu buttons
+	createGameUI();
+	
 	// Add ground and walls to the scene
 	createRoom();
-
+	
 	// Add platforms to the scene
 	createPlatforms();
-
+	
 	// Add main character to the scene
-	createHero(camera);
-
+	createHero(camera, hero.startingPosition, goalPosition);
+	
 	// Add lamp to the scene
 	createLamp();
+
+	// Enable physics
+	scene.enablePhysics(new BABYLON.Vector3(0, -10, 0), new BABYLON.AmmoJSPlugin());	
 
 	return scene;
 };
@@ -66,7 +73,6 @@ var createRoom = function () {
 	addPlatform(groundMaterial, wallDimension, new BABYLON.Vector3(-(groundDimension.x - groundDimension.y) / 2, (groundDimension.x + groundDimension.y) / 2, 0), objShow.ALWAYS);
 	// Right wall
 	addPlatform(groundMaterial, wallDimension, new BABYLON.Vector3((groundDimension.x - groundDimension.y) / 2, (groundDimension.x + groundDimension.y) / 2, 0), objShow.ALWAYS);
-
 }
 
 var createPlatforms = function () {
@@ -77,14 +83,14 @@ var createPlatforms = function () {
 	groundMaterial.diffuseTexture = groundTexture;
 	// Always display Platforms
 	addPlatform(groundMaterial, platformDimensionSmall, new BABYLON.Vector3(0, 40, 0), objShow.ALWAYS);
-	addPlatform(groundMaterial, platformDimensionBig, new BABYLON.Vector3(60, 90, 0), objShow.ALWAYS, true);
+	addPlatform(groundMaterial, platformDimensionBig, goalPosition, objShow.ALWAYS, true);
 
 	// Day platform texture
 	var platformMaterialDay = new BABYLON.StandardMaterial("platformMaterialDay", scene);
 	var platformTextureDay = new BABYLON.Texture("../../images/PlatformDay.jpg", scene);
 	platformMaterialDay.diffuseTexture = platformTextureDay;
 	// Day Platforms
-	addPlatform(platformMaterialDay, platformDimensionSmall, new BABYLON.Vector3(30, 65, 0), objShow.DAY);
+	addPlatform(platformMaterialDay, platformDimensionSmall, new BABYLON.Vector3(30, 60, 0), objShow.DAY);
 
 	// Night platform texture
 	var platformMaterialNight = new BABYLON.StandardMaterial("platformMaterialNight", scene);
@@ -134,6 +140,7 @@ engine.runRenderLoop(function () {
 		lightButtonClicked = false;
 	}
 
+	checkGoal();
 });
 
 // Watch for browser/canvas resize events
