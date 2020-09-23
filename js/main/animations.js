@@ -27,12 +27,14 @@ var idleAnimationGroup;
 var rotateToWalkAnimationGroup;
 var rotateToIdleAnimationGroup;
 var jumpAnimationGroup;
+//var lanternAnimationGroup;
 
 function initializeGroupsAnimation() {
 	walkAnimationGroup = new BABYLON.AnimationGroup("walkGroup");
 	idleAnimationGroup = new BABYLON.AnimationGroup("idleGroup");
 	rotateToWalkAnimationGroup = new BABYLON.AnimationGroup("rotateToWalkGroup");
 	rotateToIdleAnimationGroup = new BABYLON.AnimationGroup("rotateToIdleGroup");
+	//lanternAnimationGroup = new BABYLON.AnimationGroup("lanternSwing");
 }
 
 // Create walk animation
@@ -279,10 +281,22 @@ function createDanceAnimation(){
 
 }
 
+function createLanternAnimation(){
+
+	var chain1Swing = new BABYLON.Animation("chain1Swing", "rotation", framerate, BABYLON.Animation.ANIMATIONTYPE_VECTOR3, BABYLON.Animation.ANIMATIONLOOPMODE_CYCLE);
+	var keys = createAnimationKeys([Vec3DegToRadx(0), Vec3DegToRadx(30), Vec3DegToRadx(0), Vec3DegToRadx(-30), Vec3DegToRadx(0)]);
+	chain1Swing.setKeys(keys);
+	lanternAnimationGroup.addTargetedAnimation(chain1Swing, scene.getNodeByName('chain1'));
+
+}
+
+
+
 function initializeHeroAnimations() { 
 	initializeGroupsAnimation();
 	createWalkAnimation();
 	createIdleAnimation();
+	//createLanternAnimation();
 
 	createRotateToWalkAnimation();
 	rotateToWalkAnimationGroup.onAnimationEndObservable.add(function () {
@@ -312,5 +326,7 @@ function initializeHeroAnimations() {
 		}
 	});
 
-    createDanceAnimation();
+	createDanceAnimation();
+	
 }
+

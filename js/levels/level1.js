@@ -165,6 +165,7 @@ var createLamp = function () {
 
 var scene = createScene(); //Call the createScene function
 var light1 = new BABYLON.DirectionalLight("DirectionalLight1", new BABYLON.Vector3(0, -1, 1), scene);
+// Make certain surfaces glow
 var gl = new BABYLON.GlowLayer("glow", scene);
 		
 
@@ -180,6 +181,7 @@ engine.runRenderLoop(function () {
 		
 			// During the day, the direct light is yellow
 			light1.diffuse = new BABYLON.Color3(1, 1, 0);
+			// No glow
 			gl.intensity = 0;
 			// light1.setEnabled(false);
 			// Changing background colour
@@ -187,9 +189,11 @@ engine.runRenderLoop(function () {
 			
 	} else if (!day){
 			
-			gl.intensity = 3;
+			
 			// During the night, the direct light is blue
 			light1.diffuse = new BABYLON.Color3(0.2, 0.2, 1);
+			// Turn glow on for emissive objects
+			gl.intensity = 3;
 			// light1.setEnabled(false);
 			// Changing the background colour when its night
 			scene.clearColor = new BABYLON.Color3(0, 0, 0.2);	
