@@ -1,4 +1,4 @@
-/*****************************************************ENVIRONMENT UTILITY FUNCTION*****************************************************/
+/*****************************************************GUI UTILITY FUNCTION*****************************************************/
 var createGameUI = function () {
 	// UI
 	var advancedTexture = BABYLON.GUI.AdvancedDynamicTexture.CreateFullscreenUI("UI");
@@ -17,18 +17,218 @@ var createGameUI = function () {
 	menuBtn.background = "grey";
 	menuBtn.onPointerDownObservable.add(() => {
 		menuSelect.play();
-		// TODO show menu and stop game
+		hero.pause = true;
+		if (gameMenu == null)
+			createGameMenuUI();
+	});
+	UiPanel.addControl(menuBtn);
+}
 
+var createGameMenuUI = function () {
+	// UI
+	gameMenu = BABYLON.GUI.AdvancedDynamicTexture.CreateFullscreenUI("TutorialUI");
+	var UiPanel = new BABYLON.GUI.StackPanel();
+	UiPanel.width = "200px";
+	UiPanel.height = "300px";
+	UiPanel.fontSize = "14px";
+	UiPanel.background = "#8c8c8c";
+	UiPanel.horizontalAlignment = BABYLON.GUI.Control.HORIZONTAL_ALIGNMENT_CENTER;
+	UiPanel.verticalAlignment = BABYLON.GUI.Control.VERTICAL_ALIGNMENT_CENTER;
+	gameMenu.addControl(UiPanel);
+
+	var textBlock = new BABYLON.GUI.TextBlock();
+	textBlock.paddingTop = "5px";
+	textBlock.text = "Menu";
+	textBlock.textHorizontalAlignment = BABYLON.GUI.Control.HORIZONTAL_ALIGNMENT_CENTER;
+	textBlock.textVerticalAlignment = BABYLON.GUI.Control.VERTICAL_ALIGNMENT_TOP;
+	textBlock.color = "white";
+	UiPanel.addControl(textBlock);
+
+	var resumeBtn = BABYLON.GUI.Button.CreateSimpleButton("resumeBtn", "Resume");
+	resumeBtn.paddingTop = "30px";
+	resumeBtn.width = "100px";
+	resumeBtn.height = "80px";
+	resumeBtn.color = "white";
+	resumeBtn.background = "#8c8c8c";
+	resumeBtn.horizontalAlignment = BABYLON.GUI.Control.HORIZONTAL_ALIGNMENT_CENTER;
+	resumeBtn.verticalAlignment = BABYLON.GUI.Control.VERTICAL_ALIGNMENT_TOP;
+	resumeBtn.onPointerDownObservable.add(() => {
+		menuSelect.play();
+		gameMenu.dispose();
+		gameMenu = null;
+		hero.pause = false;
+	});
+	UiPanel.addControl(resumeBtn);
+
+	var mainMenu = BABYLON.GUI.Button.CreateSimpleButton("mainMenu", "Start");
+	mainMenu.paddingTop = "30px";
+	mainMenu.width = "100px";
+	mainMenu.height = "80px";
+	mainMenu.color = "white";
+	mainMenu.background = "#8c8c8c";
+	mainMenu.horizontalAlignment = BABYLON.GUI.Control.HORIZONTAL_ALIGNMENT_CENTER;
+	mainMenu.verticalAlignment = BABYLON.GUI.Control.VERTICAL_ALIGNMENT_TOP;
+	mainMenu.onPointerDownObservable.add(() => {
+		menuSelect.play();
+		window.location.replace("../../html/start_menu.html");
+	});
+	UiPanel.addControl(mainMenu);
+
+
+	var headerBackground = new BABYLON.GUI.TextBlock();
+	headerBackground.text = "Music volume: " + parseInt(backgroundVolume * 100) + "%";
+	headerBackground.height = "40px";
+	headerBackground.color = "white";
+	headerBackground.textHorizontalAlignment = BABYLON.GUI.Control.HORIZONTAL_ALIGNMENT_CENTER;
+	headerBackground.paddingTop = "10px";
+	UiPanel.addControl(headerBackground);
+
+	var sliderBackground = new BABYLON.GUI.Slider();
+	sliderBackground.horizontalAlignment = BABYLON.GUI.Control.HORIZONTAL_ALIGNMENT_LEFT;
+	sliderBackground.minimum = 0;
+	sliderBackground.maximum = 1;
+	sliderBackground.color = "#cccccc";
+	sliderBackground.value = backgroundVolume;
+	sliderBackground.height = "20px";
+	sliderBackground.width = "205px";
+	UiPanel.addControl(sliderBackground);
+	sliderBackground.onValueChangedObservable.add((value) => {
+		headerBackground.text = "Music volume: " + parseInt(backgroundVolume * 100) + "%";
+		backgroundVolume = value;
+		setVolume();
+	});
+
+	var headerEffect = new BABYLON.GUI.TextBlock();
+	headerEffect.text = "Sound effect volume: " + parseInt(soundEffectVolume * 100) + "%";
+	headerEffect.height = "40px";
+	headerEffect.color = "white";
+	headerEffect.textHorizontalAlignment = BABYLON.GUI.Control.HORIZONTAL_ALIGNMENT_CENTER;
+	headerEffect.paddingTop = "10px";
+	UiPanel.addControl(headerEffect);
+
+	var sliderEffect = new BABYLON.GUI.Slider();
+	sliderEffect.horizontalAlignment = BABYLON.GUI.Control.HORIZONTAL_ALIGNMENT_LEFT;
+	sliderEffect.minimum = 0;
+	sliderEffect.maximum = 1;
+	sliderEffect.color = "#cccccc";
+	sliderEffect.value = soundEffectVolume;
+	sliderEffect.height = "20px";
+	sliderEffect.width = "205px";
+	UiPanel.addControl(sliderEffect);
+	sliderEffect.onValueChangedObservable.add((value) => {
+		headerEffect.text = "Sound effect volume: " + parseInt(soundEffectVolume * 100) + "%";
+		soundEffectVolume = value;
+		setVolume();
+	});
+}
+
+var createNextLevelUI = function () {
+	// UI
+	var advancedTexture = BABYLON.GUI.AdvancedDynamicTexture.CreateFullscreenUI("UI");
+	var UiPanel = new BABYLON.GUI.StackPanel();
+	UiPanel.width = "220px";
+	UiPanel.fontSize = "14px";
+	UiPanel.horizontalAlignment = BABYLON.GUI.Control.HORIZONTAL_ALIGNMENT_CENTER;
+	UiPanel.verticalAlignment = BABYLON.GUI.Control.VERTICAL_ALIGNMENT_CENTER;
+	advancedTexture.addControl(UiPanel);
+
+	var menuBtn = BABYLON.GUI.Button.CreateSimpleButton("menuBtn", "Next Level");
+	menuBtn.paddingTop = "10px";
+	menuBtn.width = "100px";
+	menuBtn.height = "50px";
+	menuBtn.color = "white";
+	menuBtn.background = "grey";
+	menuBtn.onPointerDownObservable.add(() => {
+		menuSelect.play();
+		switch (hero.level) {
+			case 0:
+				window.location.replace("../../html/level2.html");
+				break;
+
+			case 1:
+				window.location.replace("../../html/level3.html");
+				break;
+
+			default:
+				break;
+		}
 	});
 	UiPanel.addControl(menuBtn);
 }
 
 /**
- * Create the main character of the game
- * @camera camera of the scene
- * @position {BABYLON.Vector3} Vector that specifies the init position of the hero
+ * Creates a simple generic UI with a text
+ * and a button. You can specify the actions 
+ * on button click
+ * @param {Text} text Text shown in the UI
+ * @param {Text} btnText Text inside the button
+ * @param {function} btnActions Function that contains all the actions to be done on button click
  */
-var createHero = function (camera, position = hero.startingPosition, goalPosition) {
+var createGenericUI = function (text, btnText, btnActions) {
+	// UI
+	advancedTexture = BABYLON.GUI.AdvancedDynamicTexture.CreateFullscreenUI("TutorialUI");
+	var UiPanel = new BABYLON.GUI.StackPanel();
+	UiPanel.width = "30%";
+	UiPanel.height = "20%";
+	UiPanel.fontSize = "14px";
+	UiPanel.horizontalAlignment = BABYLON.GUI.Control.HORIZONTAL_ALIGNMENT_CENTER;
+	UiPanel.verticalAlignment = BABYLON.GUI.Control.VERTICAL_ALIGNMENT_CENTER;
+	advancedTexture.addControl(UiPanel);
+
+	var rectangle = new BABYLON.GUI.Rectangle("rect");
+	rectangle.background = "grey";
+	rectangle.color = "black";
+	rectangle.width = "100%";
+	rectangle.height = "100%";
+
+	var textBlock = new BABYLON.GUI.TextBlock();
+	textBlock.width = "100%";
+	textBlock.text = text;
+	textBlock.color = "white";
+	rectangle.addControl(textBlock);
+
+	var exitBtn = BABYLON.GUI.Button.CreateSimpleButton("exitBtn", btnText);
+	exitBtn.paddingTop = "10px";
+	exitBtn.paddingBottom = "10px";
+	exitBtn.paddingRight = "10px";
+	exitBtn.width = "100px";
+	exitBtn.height = "50px";
+	exitBtn.color = "white";
+	exitBtn.background = "grey";
+	exitBtn.horizontalAlignment = BABYLON.GUI.Control.HORIZONTAL_ALIGNMENT_RIGHT;
+	exitBtn.verticalAlignment = BABYLON.GUI.Control.VERTICAL_ALIGNMENT_BOTTOM;
+	exitBtn.onPointerDownObservable.add(() => btnActions());
+	rectangle.addControl(exitBtn);
+	UiPanel.addControl(rectangle);
+}
+/*****************************************************GUI UTILITY FUNCTION*****************************************************/
+
+/*****************************************************ENVIRONMENT UTILITY FUNCTION*****************************************************/
+/**
+ * Create the walls and ground of the room-level 
+ */
+var createRoom = function (groundDimension, wallDimension) {
+	// Ground
+	var groundMaterial = new BABYLON.StandardMaterial("groundMaterial", scene);
+	var groundTexture = new BABYLON.Texture("../../images/ground.png", scene);
+	groundTexture.vScale = 10;
+	groundMaterial.diffuseTexture = groundTexture;
+	addPlatform(groundMaterial, groundDimension, groundPosition, objShow.ALWAYS);
+	// Left wall
+	addPlatform(groundMaterial, wallDimension, new BABYLON.Vector3(-(groundDimension.x - groundDimension.y) / 2, (groundDimension.x + groundDimension.y) / 2, 0), objShow.ALWAYS);
+	// Right wall
+	addPlatform(groundMaterial, wallDimension, new BABYLON.Vector3((groundDimension.x - groundDimension.y) / 2, (groundDimension.x + groundDimension.y) / 2, 0), objShow.ALWAYS);
+
+	// Skybox
+	createSkybox(scene);
+}
+
+/**
+ * Create the main character of the game
+ * @param camera camera of the scene
+ * @param {BABYLON.Vector3} position  Vector that specifies the init position of the hero
+ */
+var createHero = function (camera, position = hero.startingPosition, goalPosition, level = 0) {
 	// The first parameter can be used to specify which mesh to import. Here we import all meshes
 	BABYLON.SceneLoader.ImportMesh("", hero.path, hero.name, scene, function (newMeshes) {
 		hero.mesh = newMeshes[0];
@@ -58,6 +258,7 @@ var createHero = function (camera, position = hero.startingPosition, goalPositio
 		}
 
 		hero.goalPosition = goalPosition;
+		hero.level = level;
 
 		var matBB = new BABYLON.StandardMaterial("matBB", scene);
 		matBB.emissiveColor = new BABYLON.Color3(1, 1, 1);
@@ -74,28 +275,44 @@ var createHero = function (camera, position = hero.startingPosition, goalPositio
 	});
 }
 
-var createSkybox = function (day, scene) {
+/**
+ * Create the background sky of the game
+ * @param {boolean} day  Says if the sky should be day or night
+ * @param {*} scene The BABYLON scene 
+ */
+var createSkybox = function (scene) {
 	// Skybox
-	var skybox = BABYLON.Mesh.CreateBox("skyBox", 2000.0, scene);
-	var skyboxMaterial = new BABYLON.StandardMaterial("skyBox", scene);
-	skyboxMaterial.backFaceCulling = false;
-	if (day)
-		skyboxMaterial.reflectionTexture = new BABYLON.Texture("../../images/skyboxDay.png", scene, true);
-	else
-		skyboxMaterial.reflectionTexture = new BABYLON.Texture("../../images/skyboxNight.png", scene, true);
-	skyboxMaterial.reflectionTexture.coordinatesMode = BABYLON.Texture.FIXED_EQUIRECTANGULAR_MODE;
-	skyboxMaterial.disableLighting = true;
-	skybox.material = skyboxMaterial;
-	return skybox;
+	skyboxDay = BABYLON.Mesh.CreateBox("skyBox", 2000.0, scene);
+	var skyboxMaterialDay = new BABYLON.StandardMaterial("skyBox", scene);
+	skyboxMaterialDay.backFaceCulling = false;
+	skyboxMaterialDay.reflectionTexture = new BABYLON.Texture("../../images/skyboxDay.png", scene, true);
+	skyboxMaterialDay.reflectionTexture.coordinatesMode = BABYLON.Texture.FIXED_EQUIRECTANGULAR_MODE;
+	skyboxMaterialDay.disableLighting = true;
+	skyboxDay.material = skyboxMaterialDay;
+
+	skyboxNight = BABYLON.Mesh.CreateBox("skyBox", 2000.0, scene);
+	var skyboxMaterialNight = new BABYLON.StandardMaterial("skyBox", scene);
+	skyboxMaterialNight.backFaceCulling = false;
+	skyboxMaterialNight.reflectionTexture = new BABYLON.Texture("../../images/skyboxNight.png", scene, true);
+	skyboxMaterialNight.reflectionTexture.coordinatesMode = BABYLON.Texture.FIXED_EQUIRECTANGULAR_MODE;
+	skyboxMaterialNight.disableLighting = true;
+	skyboxNight.material = skyboxMaterialNight;
+	skyboxNight.setEnabled(false);
 }
 
-var changeSkybox = function (skybox, day, scene) {
-	var newskybox = createSkybox(day, scene);
-	if (skybox != null) {
-		skybox.dispose();
-		console.log("Dispose skybox");
+/**
+ * Change the background sky of the game
+ * depending on the day boolean, and remove the old skybox
+ * @param {boolean} day  Says if the sky should be day or night
+ */
+var changeSkybox = function (day) {
+	if (day) {
+		skyboxDay.setEnabled(true)
+		skyboxNight.setEnabled(false);
+	} else {
+		skyboxDay.setEnabled(false);
+		skyboxNight.setEnabled(true);
 	}
-	return newskybox;
 }
 
 var createLamp = function (position = lantern.startingPosition) {
@@ -104,8 +321,42 @@ var createLamp = function (position = lantern.startingPosition) {
 		lantern.mesh.position.copyFrom(position);
 		lantern.mesh.rotation = lantern.startingOrientation;
 		lantern.mesh.scaling = lantern.scale;
+
+		var matBB = new BABYLON.StandardMaterial("matBB", scene);
+		matBB.emissiveColor = new BABYLON.Color3(1, 1, 1);
+		matBB.wireframe = true;
+		if (!debug)
+			matBB.alpha = 0;
+
+		// AABB - Axis aligned bounding box
+		lantern.AABBmesh = BABYLON.Mesh.CreateBox("AABB", lantern.AABBdimension, scene);
+		lantern.AABBmesh.material = matBB;
+		lantern.AABBmesh.ellipsoid = new BABYLON.Vector3(lantern.AABBdimension / 2, lantern.AABBdimension / 2 - 1, 10);
+		lantern.AABBmesh.position = lantern.mesh.position.clone();
+		lantern.AABBmesh.position.y += lantern.AABBdimension;
+		lantern.AABBmesh.scaling = new BABYLON.Vector3(.8, 2, 2);
+
 		initializeLampAnimations();
 	});
+}
+
+/**
+ * If the hero intersect the lamp
+ * it show a tutorial on lights
+ */
+var checkLampTutorial = function () {
+	if (hero.AABBmesh.intersectsMesh(lantern.AABBmesh, false) && !lantern.tutorialPlayed) {
+		console.log("hello");
+		hero.pause = true;
+		lantern.tutorialPlayed = true;
+		var text = "Some platforms are visible only during the night\n and others only in daytime.\n To change to night or day press the key L";
+		createGenericUI(text, "Exit", function () {
+			menuSelect.play();
+			advancedTexture.dispose();
+			hero.pause = false;
+		});
+
+	}
 }
 
 /**
@@ -181,6 +432,10 @@ function enablePlatforms(day) {
 		}
 	});
 }
+/*****************************************************ENVIRONMENT UTILITY FUNCTION*****************************************************/
+
+
+/*****************************************************WIN UTILITY FUNCTION*****************************************************/
 
 /**
  * Checks if the hero has reached the goal
@@ -192,7 +447,9 @@ function checkGoal() {
 		danceAnimationGroup.play(true);
 		winPhysincsBalls();
 		winSound.play();
-
+		day = false;
+		lightButtonClicked = true;
+		createNextLevelUI();
 	}
 }
 
@@ -200,17 +457,23 @@ function checkGoal() {
  * When the player wins, ball falls from top
  */
 function winPhysincsBalls() {
-	for (let i = 0; i < 10; i++) {
+	for (let i = 0; i < 50; i++) {
 		// Babylon built-in 'sphere' shape. Params: name, subdivs, size, scene
 		var sphere = BABYLON.Mesh.CreateSphere("sphere", 16, 2, scene);
-		// TODO Change colors/materials
+		var sphereMaterial = new BABYLON.StandardMaterial("sphereMaterial", scene);
+
+		sphereMaterial.diffuseColor = new BABYLON.Color3(1, 0, 1);
+		sphereMaterial.specularColor = new BABYLON.Color3(0.5, 0.6, 0.87);
+		sphereMaterial.emissiveColor = new BABYLON.Color3(Math.random(), Math.random(), Math.random());
+		sphereMaterial.ambientColor = new BABYLON.Color3(0.23, 0.98, 0.53);
+		sphere.material = sphereMaterial
 
 		// Move the sphere upward 1/2 its height
 		sphere.position = hero.mesh.position.clone();
-		var rng = Math.random() + 1;
+		var rng = getRandomInt(-groundDimension.x / 2, groundDimension.x / 2);
 		var rngDirection = rng >= 1.5 ? 1 : -1;
 		sphere.position.y = hero.mesh.position.y + 30 + rngDirection * rng;
-		sphere.position.x += rngDirection * rng * 10;
+		sphere.position.x = rng;
 
 		sphere.physicsImpostor = new BABYLON.PhysicsImpostor(sphere, BABYLON.PhysicsImpostor.SphereImpostor, { mass: 1, restitution: 0.9 }, scene);
 	}
@@ -222,10 +485,11 @@ function winPhysincsBalls() {
 	hero.AABBmesh.physicsImpostor = new BABYLON.PhysicsImpostor(hero.AABBmesh, BABYLON.PhysicsImpostor.BoxImpostor, { mass: 0, restitution: 0.9 }, scene);
 
 }
-/*****************************************************ENVIRONMENT UTILITY FUNCTION*****************************************************/
+/*****************************************************WIN UTILITY FUNCTION*****************************************************/
 
 
 
+/*****************************************************MATH UTILITY FUNCTION*****************************************************/
 /**
  * Create a Babylon vector with only the x-component
  * @param {*} value x-value of the vec3
@@ -276,3 +540,15 @@ var Vec3z = function (value) {
 var Vec3DegToRadz = function (value) {
 	return Vec3z(BABYLON.Tools.ToRadians(value));
 }
+
+/**
+ * Ottenere un numero random tra due valori
+ * @param {*} min 
+ * @param {*} max 
+ */
+function getRandomInt(min, max) {
+	min = Math.ceil(min);
+	max = Math.floor(max);
+	return Math.floor(Math.random() * (max - min)) + min; //Il max è escluso e il min è incluso
+}
+/*****************************************************MATH UTILITY FUNCTION*****************************************************/

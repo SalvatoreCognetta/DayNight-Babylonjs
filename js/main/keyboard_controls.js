@@ -17,8 +17,8 @@ if (hero.mesh != null)
     var startingPosition = hero.mesh.position.y;
 //Rendering loop (executed for everyframe)
 scene.onBeforeRenderObservable.add(() => {
-    if (!hero.goalReached) {
-        var keydown = false;
+    var keydown = false;
+    if (!hero.goalReached && !hero.pause) {
         //Manage the movements of the character (e.g. position, direction)
         if (inputMap["w"] || inputMap["W"]) {
             // Jump
@@ -76,7 +76,7 @@ scene.onBeforeRenderObservable.add(() => {
 
         if (hero.mesh != null && !keydown)
             startingPosition = hero.mesh.position.y;
-
+    }
 
         //Manage animations to be played  
         if (keydown) {
@@ -161,8 +161,6 @@ scene.onBeforeRenderObservable.add(() => {
                 walkSoundTimer = null;
             }
         }
-    }
-
 
 });
 

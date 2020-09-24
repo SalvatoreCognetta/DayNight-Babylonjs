@@ -11,7 +11,6 @@ function createSounds(scene) {
     menuSelect = new BABYLON.Sound("menuSelect", "../../music/menu_select.wav", scene, null, { volume: soundEffectVolume });
     backgroundMusic = new BABYLON.Sound("backgroundMusic", "../../music/background_music.wav", scene, null, {
         volume: backgroundVolume,
-        autoplay: true,
         loop: true
     });
     walkSound = new BABYLON.Sound("walkSound", "../../music/footstep.wav", scene, null, {
