@@ -49,6 +49,8 @@ var createHero = function (camera, position = hero.startingPosition, goalPositio
 		hero.mesh.onCollide = function (collidedMesh) {
 			if (collidedMesh.position.y < hero.mesh.position.y - 1) {
 				// Check if the character touch the ground underneat him
+				// if (!hero.grounded && !groundImpactSound.isPlaying)
+				// 	groundImpactSound.play();
 				hero.grounded = true;
 			} else {
 				hero.grounded = false;
@@ -72,6 +74,29 @@ var createHero = function (camera, position = hero.startingPosition, goalPositio
 	});
 }
 
+var createSkybox = function (day, scene) {
+	// Skybox
+	var skybox = BABYLON.Mesh.CreateBox("skyBox", 2000.0, scene);
+	var skyboxMaterial = new BABYLON.StandardMaterial("skyBox", scene);
+	skyboxMaterial.backFaceCulling = false;
+	if (day)
+		skyboxMaterial.reflectionTexture = new BABYLON.Texture("../../images/skyboxDay.png", scene, true);
+	else
+		skyboxMaterial.reflectionTexture = new BABYLON.Texture("../../images/skyboxNight.png", scene, true);
+	skyboxMaterial.reflectionTexture.coordinatesMode = BABYLON.Texture.FIXED_EQUIRECTANGULAR_MODE;
+	skyboxMaterial.disableLighting = true;
+	skybox.material = skyboxMaterial;
+	return skybox;
+}
+
+var changeSkybox = function (skybox, day, scene) {
+	var newskybox = createSkybox(day, scene);
+	if (skybox != null) {
+		skybox.dispose();
+		console.log("Dispose skybox");
+	}
+	return newskybox;
+}
 
 var createLamp = function (position = lantern.startingPosition) {
 	BABYLON.SceneLoader.ImportMesh("", lantern.path, lantern.name, scene, function (newMeshes) {

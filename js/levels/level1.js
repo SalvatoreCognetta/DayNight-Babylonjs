@@ -38,6 +38,9 @@ var createScene = function () {
 
 	// Create Menu buttons
 	createGameUI();
+
+	// Create sounds
+	createSounds(scene);
 	
 	// Add ground and walls to the scene
 	createRoom();
@@ -47,6 +50,10 @@ var createScene = function () {
 	
 	// Add main character to the scene
 	createHero(camera, hero.startingPosition, goalPosition);
+	
+	// // Shadows
+	// var generator = new BABYLON.ShadowGenerator(512, light);
+	// generator.addShadowCaster(hero.mesh); 	
 	
 	// Add lamp to the scene
 	createLamp();
@@ -73,6 +80,9 @@ var createRoom = function () {
 	addPlatform(groundMaterial, wallDimension, new BABYLON.Vector3(-(groundDimension.x - groundDimension.y) / 2, (groundDimension.x + groundDimension.y) / 2, 0), objShow.ALWAYS);
 	// Right wall
 	addPlatform(groundMaterial, wallDimension, new BABYLON.Vector3((groundDimension.x - groundDimension.y) / 2, (groundDimension.x + groundDimension.y) / 2, 0), objShow.ALWAYS);
+
+	// Skybox
+	skybox = createSkybox(day, scene);
 }
 
 var createPlatforms = function () {
@@ -137,6 +147,7 @@ engine.runRenderLoop(function () {
 	if (lightButtonClicked) {
 		// Enable the platforms depending on day or night
 		enablePlatforms(day);
+		skybox = changeSkybox(skybox, day, scene);
 		lightButtonClicked = false;
 	}
 

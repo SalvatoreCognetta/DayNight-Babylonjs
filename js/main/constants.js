@@ -28,6 +28,8 @@ var lightNight;
 var day = true;
 var lightButtonClicked = true;
 
+// Skybox
+var skybox = null;
 
 // Platforms
 var platforms = [];
@@ -42,5 +44,9 @@ var platformDepth = 30;
 var platformHeight = 5;
 var platformWidthSmall = 20;
 var platformWidthBig = 35;
+
+// Game
+var backgroundVolume = 0.1;
+var soundEffectVolume = 0.5;
 
 var debug = false;
