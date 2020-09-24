@@ -16,6 +16,7 @@ engine = new BABYLON.Engine(canvas, true); // Generate the BABYLON 3D engine
 
 /******* Create scene function ******/
 var createScene = function () {
+	engine.displayLoadingUI();
 	// Create the scene space
 	var scene = new BABYLON.Scene(engine);
 	scene.clearColor = new BABYLON.Color3(0, 1, 1);
@@ -28,11 +29,11 @@ var createScene = function () {
 
 	// Add a camera to the scene and attach it to the canvas
 	camera = new BABYLON.ArcRotateCamera("Camera", Math.PI / 2, Math.PI / 2, 2, new BABYLON.Vector3(0, 10, -120), scene);
-	camera.attachControl(canvas, true);
+	// camera.attachControl(canvas, true);
 
 	// Enable collision
 	enableCollision(scene, camera);
-	
+
 	// Creates all the animation groups
 	initializeGroupsAnimation();
 
@@ -41,57 +42,38 @@ var createScene = function () {
 
 	// Create sounds
 	createSounds(scene);
-	
+
 	// Add ground and walls to the scene
-	createRoom();
-	
+	createRoom(groundDimension, wallDimension);
+
 	// Add platforms to the scene
 	createPlatforms();
-	
+
 	// Add main character to the scene
-	createHero(camera, hero.startingPosition, goalPosition);
-	
+	createHero(camera, hero.startingPosition, goalPosition, 0);
+
 	// // Shadows
 	// var generator = new BABYLON.ShadowGenerator(512, light);
 	// generator.addShadowCaster(hero.mesh); 	
-	
+
 	// Add lamp to the scene
 	createLamp();
 
 	// Enable physics
-	scene.enablePhysics(new BABYLON.Vector3(0, -10, 0), new BABYLON.AmmoJSPlugin());	
+	scene.enablePhysics(new BABYLON.Vector3(0, -10, 0), new BABYLON.AmmoJSPlugin());
 
 	return scene;
 };
 /******* End of the create scene function ******/
 
-
-
 /**
- * Create the walls and ground of the room-level 
+ * Creates the platforms of the scene
  */
-var createRoom = function () {
-	// Ground
-	var groundMaterial = new BABYLON.StandardMaterial("groundMaterial", scene);
-	var groundTexture = new BABYLON.Texture("../../images/ground.png", scene);
-	groundMaterial.diffuseTexture = groundTexture;
-	addPlatform(groundMaterial, groundDimension, groundPosition, objShow.ALWAYS);
-	// Left wall
-	addPlatform(groundMaterial, wallDimension, new BABYLON.Vector3(-(groundDimension.x - groundDimension.y) / 2, (groundDimension.x + groundDimension.y) / 2, 0), objShow.ALWAYS);
-	// Right wall
-	addPlatform(groundMaterial, wallDimension, new BABYLON.Vector3((groundDimension.x - groundDimension.y) / 2, (groundDimension.x + groundDimension.y) / 2, 0), objShow.ALWAYS);
-
-	// Skybox
-	skybox = createSkybox(day, scene);
-}
-
 var createPlatforms = function () {
-
 	// Always display platform texture
 	var groundMaterial = new BABYLON.StandardMaterial("groundMaterial", scene);
 	var groundTexture = new BABYLON.Texture("../../images/ground.png", scene);
 	groundMaterial.diffuseTexture = groundTexture;
-	// Always display Platforms
 	addPlatform(groundMaterial, platformDimensionSmall, new BABYLON.Vector3(0, 40, 0), objShow.ALWAYS);
 	addPlatform(groundMaterial, platformDimensionBig, goalPosition, objShow.ALWAYS, true);
 
@@ -121,14 +103,22 @@ var gl = new BABYLON.GlowLayer("glow", scene);
 // Register a render loop to repeatedly render the scene
 engine.runRenderLoop(function () {
 	scene.render();
+	if (hero.mesh != null && lantern.mesh != null && flagGoal.mesh != null && !backgroundMusic.isPlaying) {
+		engine.hideLoadingUI();
+		backgroundMusic.play();
+	}
+	
 	if (hero.mesh != null) {
 		hero.AABBmesh.position.y = hero.mesh.position.y + hero.height / 2;
 		hero.AABBmesh.position.x = hero.mesh.position.x + .8;
 		hero.mesh.moveWithCollisions(down);
+
+		if (hero.AABBmesh != null && lantern.AABBmesh != null)
+			checkLampTutorial();
 	}
 	if (day) {
 		// During the day, the direct light is yellow
-		lightNight.diffuse = new BABYLON.Color3(1, 1, 0);
+		lightNight.diffuse = new BABYLON.Color3(0.8, 0.8, 0);
 		lightNight.intensity = 0.5;
 		// No glow
 		gl.intensity = 0;
@@ -147,7 +137,7 @@ engine.runRenderLoop(function () {
 	if (lightButtonClicked) {
 		// Enable the platforms depending on day or night
 		enablePlatforms(day);
-		skybox = changeSkybox(skybox, day, scene);
+		changeSkybox(day);
 		lightButtonClicked = false;
 	}
 

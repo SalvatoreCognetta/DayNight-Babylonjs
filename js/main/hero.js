@@ -6,6 +6,9 @@ var hero = {
     goalPosition : null,
     goalReached  : false,
 
+    pause : false,
+    level : 0,
+
     height : 10.899000000000001,
     headCollision : false,
     lateralCollision : false,
