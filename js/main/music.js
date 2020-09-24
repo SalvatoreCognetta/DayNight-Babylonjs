@@ -1,6 +1,7 @@
 var winSound;
 var menuSelect;
 var backgroundMusic;
+var menuBackgroundMusic;
 var walkSound;
 var jumpSound;
 var groundImpactSound;
@@ -30,4 +31,16 @@ function setVolume() {
     walkSound.setVolume(soundEffectVolume);
     jumpSound.setVolume(soundEffectVolume);
     lightSwitch.setVolume(soundEffectVolume);
+}
+
+function createMenuSounds(scene){
+
+    menuSelect = new BABYLON.Sound("menuSelect", "../../music/menu_select.wav", scene, null, { volume: soundEffectVolume });
+    // music taken from https://freesound.org/people/Clacksberg/sounds/506324/ 
+    backgroundMusic = new BABYLON.Sound("menuBackgroundMusic", "../../music/menu_background_music.wav", scene, null, {
+        volume: backgroundVolume,
+        autoplay: true,
+        loop:true
+    });
+
 }
