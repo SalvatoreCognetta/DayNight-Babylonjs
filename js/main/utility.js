@@ -84,7 +84,8 @@ var createGameMenuUI = function () {
 	controls.verticalAlignment = BABYLON.GUI.Control.VERTICAL_ALIGNMENT_TOP;
 	controls.onPointerDownObservable.add(() => {
 		menuSelect.play();
-		createControlsUI();
+		gameMenu.dispose();
+		createControlsUI(createGameMenuUI);
 	});
 	UiPanel.addControl(controls);
 
@@ -295,8 +296,9 @@ var createStartMenuUI = function(){
     ctrlBtn.color = "white";
     ctrlBtn.background = "gray";
     ctrlBtn.onPointerDownObservable.add(()=> {
-        menuSelect.play(); // <-- The page changes too quickly to be able to hear the button click
-		createControlsUI();
+		menuSelect.play(); // <-- The page changes too quickly to be able to hear the button click
+		startTexture.dispose();
+		createControlsUI(createStartMenuUI);
     });
     UiPanel.addControl(ctrlBtn);
 
@@ -316,7 +318,7 @@ var createStartMenuUI = function(){
     UiPanel.addControl(settingsBtn);
 }
 
-var createControlsUI = function(){
+var createControlsUI = function(callback){
 	controlsTexture = BABYLON.GUI.AdvancedDynamicTexture.CreateFullscreenUI("ControlsUI");
 	var UiPanel = new BABYLON.GUI.StackPanel();
 	UiPanel.width = .3;
@@ -340,6 +342,8 @@ var createControlsUI = function(){
 	closeBtn.onPointerDownObservable.add(() => {
 		menuSelect.play();
 		controlsTexture.dispose();
+		if (callback != null)
+			callback();
 	});
 	UiPanel.addControl(closeBtn);	
 }
