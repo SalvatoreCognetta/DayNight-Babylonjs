@@ -23,7 +23,7 @@ scene.onBeforeRenderObservable.add(() => {
         if (inputMap["w"] || inputMap["W"]) {
             // Jump
             if (hero.mesh.position.y < startingPosition + hero.maximumJumpHeight && hero.grounded && !hero.headCollision) {
-                hero.mesh.moveWithCollisions(new BABYLON.Vector3(0, 1.5, 0));
+                hero.mesh.moveWithCollisions(new BABYLON.Vector3(0, 2, 0));
                 checkHeadCollision();
             } else
                 hero.grounded = false;
@@ -78,89 +78,89 @@ scene.onBeforeRenderObservable.add(() => {
             startingPosition = hero.mesh.position.y;
     }
 
-        //Manage animations to be played  
-        if (keydown) {
-            if (!animating) {
-                animating = true;
-                if (inputMap["d"] || inputMap["D"]) {
-                    //Walk Right
-                    if (walkSoundTimer == null) {
-                        walkSound.play();
-                        walkSoundTimer = setInterval(function () { walkSound.play(); }, 500);
-                        console.log(walkSoundTimer);
-                    }
-
-                    hero.walkDirecton = 1;
-                    createRotateToWalkAnimation();
-                    if (!rotationToWalkEnded) {
-                        hero.currentAnimation = animation.IDLETOWALK;
-                        rotateToWalkAnimationGroup.play(); // At the end of the IdleToWalk animation is called the walk animation itself
-                    }
-
-                    keydown = true;
-                } else if (inputMap["a"] || inputMap["A"]) {
-                    //Walk Left
-                    if (walkSoundTimer == null) {
-                        walkSound.play();
-                        walkSoundTimer = setInterval(function () { walkSound.play(); }, 500);
-                        console.log(walkSoundTimer);
-                    }
-
-                    hero.walkDirecton = -1;
-                    createRotateToWalkAnimation();
-                    if (!rotationToWalkEnded) {
-                        hero.currentAnimation = animation.IDLETOWALK;
-                        rotateToWalkAnimationGroup.play();
-                    }
-                }
-                if (inputMap["l"] || inputMap["L"]) {
-                    lightSwitch.play();
-                    day = !day;
-                    if (day) {
-                        lanternAnimationGroup.reset();
-                        lanternAnimationGroup.stop();
-                    } else {
-                        lanternAnimationGroup.play(true);
-                    }
+    //Manage animations to be played  
+    if (keydown) {
+        if (!animating) {
+            animating = true;
+            if (inputMap["d"] || inputMap["D"]) {
+                //Walk Right
+                if (walkSoundTimer == null) {
+                    walkSound.play();
+                    walkSoundTimer = setInterval(function () { walkSound.play(); }, 500);
+                    console.log(walkSoundTimer);
                 }
 
-                if ((inputMap["w"] || inputMap["W"]) && hero.grounded) {
-                    jumpAnimationGroup.play();
-                    jumpSound.play();
+                hero.walkDirecton = 1;
+                createRotateToWalkAnimation();
+                if (!rotationToWalkEnded) {
+                    hero.currentAnimation = animation.IDLETOWALK;
+                    rotateToWalkAnimationGroup.play(); // At the end of the IdleToWalk animation is called the walk animation itself
+                }
+
+                keydown = true;
+            } else if (inputMap["a"] || inputMap["A"]) {
+                //Walk Left
+                if (walkSoundTimer == null) {
+                    walkSound.play();
+                    walkSoundTimer = setInterval(function () { walkSound.play(); }, 500);
+                }
+
+                hero.walkDirecton = -1;
+                createRotateToWalkAnimation();
+                if (!rotationToWalkEnded) {
+                    hero.currentAnimation = animation.IDLETOWALK;
+                    rotateToWalkAnimationGroup.play();
                 }
             }
-        } else {
-            hero.grounded = false;
-            hero.headCollision = false;
-            hero.lateralCollision = false;
-            if (hero.mesh != null && animating) {
-                if (hero.currentAnimation != animation.IDLE) {
-                    hero.currentAnimation = animation.WALKTOIDLE;
-                    createRotateToIdleAnimation();
-                    walkAnimationGroup.stop();
-                    rotateToWalkAnimationGroup.stop();
-                    rotateToIdleAnimationGroup.play();
+            if (inputMap["l"] || inputMap["L"]) {
+                lightSwitch.play();
+                day = !day;
+                if (day) {
+                    lanternAnimationGroup.reset();
+                    lanternAnimationGroup.stop();
                 } else {
-                    //Default animation is idle when no key is down     
-                    idleAnimationGroup.reset();
-                    idleAnimationGroup.start(true, 1.0, idleAnimationGroup.from, idleAnimationGroup.to, false);
-
+                    lanternAnimationGroup.play(true);
                 }
-                //Stop all animations besides Idle Anim when no key is down
-                walkAnimationGroup.reset();
-                walkAnimationGroup.stop();
-
-                //Ensure animation are played only once per rendering loop
-                animating = false;
-
-                rotationToWalkEnded = false;
             }
 
-            if (walkSoundTimer != null) {
-                clearInterval(walkSoundTimer);
-                walkSoundTimer = null;
+            if ((inputMap["w"] || inputMap["W"]) && hero.grounded) {
+                jumpAnimationGroup.play();
+                jumpSound.play();
             }
         }
+    } else {
+        hero.grounded = false;
+        hero.headCollision = false;
+        hero.lateralCollision = false;
+        if (hero.mesh != null && animating) {
+            if (hero.currentAnimation != animation.IDLE) {
+                hero.currentAnimation = animation.WALKTOIDLE;
+                createRotateToIdleAnimation();
+                walkAnimationGroup.stop();
+                rotateToWalkAnimationGroup.stop();
+                rotateToIdleAnimationGroup.play();
+            } else {
+                //Default animation is idle when no key is down     
+                idleAnimationGroup.reset();
+                idleAnimationGroup.start(true, 1.0, idleAnimationGroup.from, idleAnimationGroup.to, false);
+
+            }
+            //Stop all animations besides Idle Anim when no key is down
+            walkAnimationGroup.reset();
+            walkAnimationGroup.stop();
+
+            //Ensure animation are played only once per rendering loop
+            animating = false;
+
+            rotationToWalkEnded = false;
+            checkIdle();
+        }
+
+        if (walkSoundTimer != null) {
+            clearInterval(walkSoundTimer);
+            walkSoundTimer = null;
+        }
+    }
 
 });
 
@@ -171,14 +171,21 @@ scene.onBeforeRenderObservable.add(() => {
  * changes to that animation
  */
 function checkIdle() {
-    var moving = false;
-    inputMap.forEach((keyPressed) => {
-        if (keyPressed == true) {
-            moving = true;
+    if (hero.currentAnimation != animation.IDLE) {
+        var moving = false;
+        var keys = Object.keys(inputMap);
+        for (var i = 0; i < keys.length; i++) {
+            var key = keys[i];
+            if (key == "w" || key == "W" || key == "a" || key == "A" || key == "s" || key == "S") {
+                if (inputMap[key]) {
+                    console.log("Key:"+ key);
+                    moving = true;
+                }
+            }
         }
-    });
-    if (!moving && hero.currentAnimation != animation.IDLE) {
-        stopAllHeroAnimations();
-        idleAnimationGroup.start(true, 1.0, idleAnimationGroup.from, idleAnimationGroup.to, false);
+        if (!moving && hero.currentAnimation != animation.IDLE) {
+            console.log("Starting idle")
+            idleAnimationGroup.start(true, 1.0, idleAnimationGroup.from, idleAnimationGroup.to, false);
+        }
     }
 }

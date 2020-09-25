@@ -3,7 +3,7 @@ var engine;
 var camera;
 
 var framerate = 60;
-var down = new BABYLON.Vector3(0,-.5,0);
+var down = new BABYLON.Vector3(0,-.981,0);
 
 // Animations
 var animating = true;
@@ -51,11 +51,10 @@ var backgroundVolume = 0.1;
 var soundEffectVolume = 0.5;
 
 // UI
-var button1 = null;
-var button2 = null;
-var button3 = null;
-
-var advancedTexture = null;
+var genericTexture = null;
+var startTexture = null;
+var controlsTexture = null;
+var settingsTexture = null;
 var gameMenu = null;
 
 var debug = false;

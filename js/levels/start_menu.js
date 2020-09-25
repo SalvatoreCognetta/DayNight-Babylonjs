@@ -16,9 +16,6 @@ var createScene = function(){
 
     createMenuSounds(scene);
 
-    createInfoUI();
-    //createGenericUI("How To Play", "back");
-
     return scene;
 }
 

@@ -15,7 +15,7 @@ var hero = {
 
     currentAnimation : animation.IDLE,
 
-    maximumJumpHeight: 35,
+    maximumJumpHeight: 30,
     grounded : true, // Says if the hero is grounded
 
     walkDirecton : 1,
