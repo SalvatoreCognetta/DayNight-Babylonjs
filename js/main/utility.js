@@ -60,7 +60,7 @@ var createGameMenuUI = function () {
 	});
 	UiPanel.addControl(resumeBtn);
 
-	var mainMenu = BABYLON.GUI.Button.CreateSimpleButton("mainMenu", "Start");
+	var mainMenu = BABYLON.GUI.Button.CreateSimpleButton("mainMenu", "Exit to Main Menu");
 	mainMenu.paddingTop = "30px";
 	mainMenu.width = "100px";
 	mainMenu.height = "80px";
@@ -155,6 +155,161 @@ var createNextLevelUI = function () {
 	});
 	UiPanel.addControl(menuBtn);
 }
+
+var createSettingsUI = function () {
+	// UI
+	gameMenu = BABYLON.GUI.AdvancedDynamicTexture.CreateFullscreenUI("TutorialUI");
+	var UiPanel = new BABYLON.GUI.StackPanel();
+	UiPanel.width = "200px";
+	UiPanel.height = "230px";
+	UiPanel.fontSize = "14px";
+	UiPanel.background = "#8c8c8c";
+	UiPanel.horizontalAlignment = BABYLON.GUI.Control.HORIZONTAL_ALIGNMENT_CENTER;
+	UiPanel.verticalAlignment = BABYLON.GUI.Control.VERTICAL_ALIGNMENT_CENTER;
+	gameMenu.addControl(UiPanel);
+
+	var textBlock = new BABYLON.GUI.TextBlock();
+	textBlock.paddingTop = "5px";
+	textBlock.text = "Settings";
+	textBlock.textHorizontalAlignment = BABYLON.GUI.Control.HORIZONTAL_ALIGNMENT_CENTER;
+	textBlock.textVerticalAlignment = BABYLON.GUI.Control.VERTICAL_ALIGNMENT_TOP;
+	textBlock.color = "white";
+	UiPanel.addControl(textBlock);
+
+	var resumeBtn = BABYLON.GUI.Button.CreateSimpleButton("resumeBtn", "Back");
+	resumeBtn.paddingTop = "30px";
+	resumeBtn.width = "100px";
+	resumeBtn.height = "80px";
+	resumeBtn.color = "white";
+	resumeBtn.background = "#8c8c8c";
+	resumeBtn.horizontalAlignment = BABYLON.GUI.Control.HORIZONTAL_ALIGNMENT_CENTER;
+	resumeBtn.verticalAlignment = BABYLON.GUI.Control.VERTICAL_ALIGNMENT_TOP;
+	resumeBtn.onPointerDownObservable.add(() => {
+		menuSelect.play();
+		gameMenu.dispose();
+		gameMenu = null;
+		button1.isVisible = true;
+		button2.isVisible = true;
+		button3.isVisible = true;
+	});
+	UiPanel.addControl(resumeBtn);
+
+	var headerBackground = new BABYLON.GUI.TextBlock();
+	headerBackground.text = "Music volume: " + parseInt(backgroundVolume * 100) + "%";
+	headerBackground.height = "40px";
+	headerBackground.color = "white";
+	headerBackground.textHorizontalAlignment = BABYLON.GUI.Control.HORIZONTAL_ALIGNMENT_CENTER;
+	headerBackground.paddingTop = "10px";
+	UiPanel.addControl(headerBackground);
+
+	var sliderBackground = new BABYLON.GUI.Slider();
+	sliderBackground.horizontalAlignment = BABYLON.GUI.Control.HORIZONTAL_ALIGNMENT_LEFT;
+	sliderBackground.minimum = 0;
+	sliderBackground.maximum = 1;
+	sliderBackground.color = "#cccccc";
+	sliderBackground.value = backgroundVolume;
+	sliderBackground.height = "20px";
+	sliderBackground.width = "205px";
+	UiPanel.addControl(sliderBackground);
+	sliderBackground.onValueChangedObservable.add((value) => {
+		headerBackground.text = "Music volume: " + parseInt(backgroundVolume * 100) + "%";
+		backgroundVolume = value;
+		setMenuVolume();
+	});
+
+	var headerEffect = new BABYLON.GUI.TextBlock();
+	headerEffect.text = "Sound effect volume: " + parseInt(soundEffectVolume * 100) + "%";
+	headerEffect.height = "40px";
+	headerEffect.color = "white";
+	headerEffect.textHorizontalAlignment = BABYLON.GUI.Control.HORIZONTAL_ALIGNMENT_CENTER;
+	headerEffect.paddingTop = "10px";
+	UiPanel.addControl(headerEffect);
+
+	var sliderEffect = new BABYLON.GUI.Slider();
+	sliderEffect.horizontalAlignment = BABYLON.GUI.Control.HORIZONTAL_ALIGNMENT_LEFT;
+	sliderEffect.minimum = 0;
+	sliderEffect.maximum = 1;
+	sliderEffect.color = "#cccccc";
+	sliderEffect.value = soundEffectVolume;
+	sliderEffect.height = "20px";
+	sliderEffect.width = "205px";
+	UiPanel.addControl(sliderEffect);
+	sliderEffect.onValueChangedObservable.add((value) => {
+		headerEffect.text = "Sound effect volume: " + parseInt(soundEffectVolume * 100) + "%";
+		soundEffectVolume = value;
+		setMenuVolume();
+	});
+}
+
+var createStartMenuUI = function(){
+	
+	var advancedTexture = BABYLON.GUI.AdvancedDynamicTexture.CreateFullscreenUI("UI");
+    var UiPanel = new BABYLON.GUI.StackPanel();
+    UiPanel.width = "220px";
+    UiPanel.fontSize = "14px";
+    UiPanel.horizontalAlignment = BABYLON.GUI.Control.HORIZONTAL_ALIGNMENT_CENTER;
+    UiPanel.verticalAlignment = BABYLON.GUI.Control.VERTICAL_ALIGNMENT_CENTER;
+    advancedTexture.addControl(UiPanel);
+
+    // creating the button for the Level 1 link
+    button1 = BABYLON.GUI.Button.CreateSimpleButton("but1", "Tutorial");
+    button1.paddingTop = "10px";
+    button1.width = "100px";
+    button1.height = "50px";
+    button1.color = "white";
+    button1.background = "gray";
+    button1.onPointerDownObservable.add(()=> {
+        //menuSelect.play(); // <-- The page changes too quickly to be able to hear the button click
+        window.location.href = './level1.html';
+    });
+    UiPanel.addControl(button1);
+
+    button2 = BABYLON.GUI.Button.CreateSimpleButton("but2", "Level 1");
+    button2.paddingTop = "10px";
+    button2.width = "100px";
+    button2.height = "50px";
+    button2.color = "white";
+    button2.background = "gray";
+    button2.onPointerDownObservable.add(()=> {
+        menuSelect.play(); // <-- The page changes too quickly to be able to hear the button click
+        // window.location.href = './level1.html'; // TODO change reference to level 2, once completed
+    });
+    UiPanel.addControl(button2);
+
+    button3 = BABYLON.GUI.Button.CreateSimpleButton("but2", "Settings");
+    button3.paddingTop = "10px";
+    button3.width = "100px";
+    button3.height = "50px";
+    button3.color = "white";
+    button3.background = "gray";
+    button3.onPointerDownObservable.add(()=> {
+		menuSelect.play(); 
+		// Hides the initial buttons so that the user cannot accidentally click them through the menu
+		button1.isVisible = false;		
+		button2.isVisible = false;
+		button3.isVisible = false;
+		createSettingsUI();// window.location.href = './level1.html'; // TODO change reference to level 2, once completed
+		
+	});
+	
+    UiPanel.addControl(button3);
+}
+
+var createInfoUI = function(){
+
+	advancedTexture = BABYLON.GUI.AdvancedDynamicTexture.CreateFullscreenUI("TutorialUI");
+	var UiPanel = new BABYLON.GUI.StackPanel();
+	UiPanel.width = 0.2;
+	UiPanel.height = 0.4;
+	UiPanel.left = 600;
+	UiPanel.verticalAlignment = BABYLON.GUI.Control.VERTICAL_ALIGNMENT_CENTER;
+	advancedTexture.addControl(UiPanel);
+
+	var image = new BABYLON.GUI.Image("info", "../../images/info.jpg");
+	UiPanel.addControl(image);
+	
+}
+
 
 /**
  * Creates a simple generic UI with a text

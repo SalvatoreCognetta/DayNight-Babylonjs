@@ -51,6 +51,10 @@ var backgroundVolume = 0.1;
 var soundEffectVolume = 0.5;
 
 // UI
+var button1 = null;
+var button2 = null;
+var button3 = null;
+
 var advancedTexture = null;
 var gameMenu = null;
 
