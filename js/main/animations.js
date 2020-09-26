@@ -101,6 +101,20 @@ function createWalkAnimation() {
 	// Use the addTargetedAnimation method to link the animations with the meshes and add these to the groups
 	walkAnimationGroup.addTargetedAnimation(walkLegLeft, scene.getNodeByName('leg_left'));
 
+	//**********************LEFT LEG LOWER**********************//
+	var walkLegLeftLower = new BABYLON.Animation("walkLegLeftLower", "rotation", framerate, BABYLON.Animation.ANIMATIONTYPE_VECTOR3, BABYLON.Animation.ANIMATIONLOOPMODE_CYCLE);
+	var legLeftRotationLower = scene.getNodeByName('leg_left_lower').rotation.clone();
+	var keys = createAnimationKeys([
+		legLeftRotationLower,
+		new BABYLON.Vector3(legLeftRotationLower.x + BABYLON.Tools.ToRadians(10), legLeftRotationLower.y, legLeftRotationLower.z),
+		legLeftRotationLower,
+		new BABYLON.Vector3(legLeftRotationLower.x - BABYLON.Tools.ToRadians(10), legLeftRotationLower.y, legLeftRotationLower.z),
+		legLeftRotationLower
+	]); // An array with all animation keys
+	walkLegLeftLower.setKeys(keys); // Adding the animation array to the animation object
+	// Use the addTargetedAnimation method to link the animations with the meshes and add these to the groups
+	walkAnimationGroup.addTargetedAnimation(walkLegLeftLower, scene.getNodeByName('leg_left_lower'));
+
 	//**********************RIGHT LEG**********************//
 	var walkLegRight = new BABYLON.Animation("walkLegRight", "rotation", framerate, BABYLON.Animation.ANIMATIONTYPE_VECTOR3, BABYLON.Animation.ANIMATIONLOOPMODE_CYCLE);
 	var legRightRotation = scene.getNodeByName('leg_right').rotation.clone();
@@ -114,6 +128,20 @@ function createWalkAnimation() {
 	walkLegRight.setKeys(keys); // Adding the animation array to the animation object
 	// Use the addTargetedAnimation method to link the animations with the meshes and add these to the groups
 	walkAnimationGroup.addTargetedAnimation(walkLegRight, scene.getNodeByName('leg_right'));
+
+	//**********************RIGHT LEG LOWER**********************//
+	var walkLegRightLower = new BABYLON.Animation("walkLegRightLower", "rotation", framerate, BABYLON.Animation.ANIMATIONTYPE_VECTOR3, BABYLON.Animation.ANIMATIONLOOPMODE_CYCLE);
+	var legRightRotationLower = scene.getNodeByName('leg_right_lower').rotation.clone();
+	var keys = createAnimationKeys([
+		legRightRotationLower,
+		new BABYLON.Vector3(legRightRotationLower.x + BABYLON.Tools.ToRadians(10), legRightRotationLower.y, legRightRotationLower.z),
+		legRightRotationLower,
+		new BABYLON.Vector3(legRightRotationLower.x - BABYLON.Tools.ToRadians(10), legRightRotationLower.y, legRightRotationLower.z),
+		legRightRotationLower
+	]); // An array with all animation keys
+	walkLegRightLower.setKeys(keys); // Adding the animation array to the animation object
+	// Use the addTargetedAnimation method to link the animations with the meshes and add these to the groups
+	walkAnimationGroup.addTargetedAnimation(walkLegRightLower, scene.getNodeByName('leg_right_lower'));
 }
 
 // Create idle animation
