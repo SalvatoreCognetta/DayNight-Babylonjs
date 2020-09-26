@@ -160,10 +160,6 @@ var createNextLevelUI = function () {
 				window.location.replace("../../html/level1.html");
 				break;
 
-			case 1:
-				window.location.replace("../../html/level2.html");
-				break;
-
 			default:
 				break;
 		}
@@ -642,7 +638,8 @@ function checkGoal() {
 		winSound.play();
 		day = false;
 		lightButtonClicked = true;
-		createNextLevelUI();
+		if (hero.level < 1)
+			createNextLevelUI();
 	}
 }
 
