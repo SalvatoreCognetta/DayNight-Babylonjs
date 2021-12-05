@@ -72,7 +72,7 @@ var createScene = function () {
 var createPlatforms = function () {
     // Always display platform texture
     var groundMaterial = new BABYLON.StandardMaterial("groundMaterial", scene);
-    var groundTexture = new BABYLON.Texture("../../images/ground.png", scene);
+    var groundTexture = new BABYLON.Texture("../images/ground.png", scene);
     groundMaterial.diffuseTexture = groundTexture;
     var platformPosition = lampPosition.clone();
     platformPosition.z = 0;
@@ -84,7 +84,7 @@ var createPlatforms = function () {
     
     // Day platform texture
     var platformMaterialDay = new BABYLON.StandardMaterial("platformMaterialDay", scene);
-    var platformTextureDay = new BABYLON.Texture("../../images/PlatformDay.jpg", scene);
+    var platformTextureDay = new BABYLON.Texture("../images/PlatformDay.jpg", scene);
     platformMaterialDay.diffuseTexture = platformTextureDay;
 	platformMaterialDay.diffuseColor = new BABYLON.Color3(1, 0, 1);
 	platformMaterialDay.specularColor = new BABYLON.Color3(0.5, 0.6, 0.87);
@@ -97,7 +97,7 @@ var createPlatforms = function () {
     
     // Night platform texture
     var platformMaterialNight = new BABYLON.StandardMaterial("platformMaterialNight", scene);
-    var platformTextureNight = new BABYLON.Texture("../../images/PlatformClose.jpg", scene);
+    var platformTextureNight = new BABYLON.Texture("../images/PlatformClose.jpg", scene);
     platformMaterialNight.diffuseTexture = platformTextureNight;
 	platformMaterialNight.diffuseColor = new BABYLON.Color3(0.8, 0, 0.7);
 	platformMaterialNight.specularColor = new BABYLON.Color3(1, 1, 1);

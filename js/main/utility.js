@@ -70,7 +70,7 @@ var createGameMenuUI = function () {
 	mainMenu.verticalAlignment = BABYLON.GUI.Control.VERTICAL_ALIGNMENT_TOP;
 	mainMenu.onPointerDownObservable.add(() => {
 		menuSelect.play();
-		window.location.replace("../../html/start_menu.html");
+		window.location.replace("../html/start_menu.html");
 	});
 	UiPanel.addControl(mainMenu);
 
@@ -157,7 +157,7 @@ var createNextLevelUI = function () {
 		menuSelect.play();
 		switch (hero.level) {
 			case 0:
-				window.location.replace("../../html/level1.html");
+				window.location.replace("../html/level1.html");
 				break;
 
 			default:
@@ -323,7 +323,7 @@ var createControlsUI = function(callback){
 	UiPanel.horizontalAlignment = BABYLON.GUI.Control.HORIZONTAL_ALIGNMENT_CENTER;
 	controlsTexture.addControl(UiPanel);
 
-	var image = new BABYLON.GUI.Image("info", "../../images/info.jpg");
+	var image = new BABYLON.GUI.Image("info", "../images/info.jpg");
 	UiPanel.addControl(image);
 
 	var closeBtn = BABYLON.GUI.Button.CreateSimpleButton("closeBtn", "X");
@@ -399,7 +399,7 @@ var createGenericUI = function (text, btnText, btnActions) {
 var createRoom = function (groundDimension, wallDimension) {
 	// Ground
 	var groundMaterial = new BABYLON.StandardMaterial("groundMaterial", scene);
-	var groundTexture = new BABYLON.Texture("../../images/ground.png", scene);
+	var groundTexture = new BABYLON.Texture("../images/ground.png", scene);
 	groundTexture.vScale = 10;
 	groundMaterial.diffuseTexture = groundTexture;
 	addPlatform(groundMaterial, groundDimension, groundPosition, objShow.ALWAYS);
@@ -474,7 +474,7 @@ var createSkybox = function (scene) {
 	skyboxDay = BABYLON.Mesh.CreateBox("skyBox", 2000.0, scene);
 	var skyboxMaterialDay = new BABYLON.StandardMaterial("skyBox", scene);
 	skyboxMaterialDay.backFaceCulling = false;
-	skyboxMaterialDay.reflectionTexture = new BABYLON.Texture("../../images/skyboxDay.png", scene, true);
+	skyboxMaterialDay.reflectionTexture = new BABYLON.Texture("../images/skyboxDay.png", scene, true);
 	skyboxMaterialDay.reflectionTexture.coordinatesMode = BABYLON.Texture.FIXED_EQUIRECTANGULAR_MODE;
 	skyboxMaterialDay.disableLighting = true;
 	skyboxDay.material = skyboxMaterialDay;
@@ -482,7 +482,7 @@ var createSkybox = function (scene) {
 	skyboxNight = BABYLON.Mesh.CreateBox("skyBox", 2000.0, scene);
 	var skyboxMaterialNight = new BABYLON.StandardMaterial("skyBox", scene);
 	skyboxMaterialNight.backFaceCulling = false;
-	skyboxMaterialNight.reflectionTexture = new BABYLON.Texture("../../images/skyboxNight.png", scene, true);
+	skyboxMaterialNight.reflectionTexture = new BABYLON.Texture("../images/skyboxNight.png", scene, true);
 	skyboxMaterialNight.reflectionTexture.coordinatesMode = BABYLON.Texture.FIXED_EQUIRECTANGULAR_MODE;
 	skyboxMaterialNight.disableLighting = true;
 	skyboxNight.material = skyboxMaterialNight;
